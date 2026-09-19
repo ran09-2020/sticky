@@ -21,7 +21,7 @@ export default function Board() {
   const { slug = 'public' } = useParams<{slug: string;}>();
   const navigate = useNavigate();
 
-  const { board, loading: boardLoading, error, updateTitle, deleteBoard } = useBoard(slug);
+  const { board, loading: boardLoading, error, updateTitle, updateSize, deleteBoard } = useBoard(slug);
   const { notes, loading: notesLoading, addNote, moveNote, resizeNote, updateText, changeColor, changeFont, toggleSticker, bringToFront, deleteNote, deleteAllNotes } = useNotes(board?.id);
   const { boards: localBoards, addBoard, removeBoard } = useLocalBoards();
   const { author, setAuthor } = useAuthor();
@@ -154,7 +154,13 @@ export default function Board() {
 
 
       {/* Canvas */}
-      <Canvas ref={canvasRef} onSizeChange={handleSizeChange}>
+      <Canvas 
+        ref={canvasRef} 
+        onSizeChange={handleSizeChange}
+        width={board.width}
+        height={board.height}
+        onResizeEnd={updateSize}
+      >
         <div data-ev-id="ev_1bf3cdf1a1"
         ref={notesContainerRef}
         className="absolute inset-0 cursor-crosshair"

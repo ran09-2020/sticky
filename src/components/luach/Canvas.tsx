@@ -8,13 +8,33 @@ export interface CanvasHandle {
 interface CanvasProps {
   children: ReactNode;
   onSizeChange?: (widthPercent: number, heightPercent: number) => void;
+  width?: number | null;
+  height?: number | null;
+  onResizeEnd?: (width: number, height: number) => void;
 }
 
-export const Canvas = forwardRef<CanvasHandle, CanvasProps>(({ children, onSizeChange }, ref) => {
-  const [canvasSize, setCanvasSize] = useState({ width: window.innerWidth, height: window.innerHeight });
+export const Canvas = forwardRef<CanvasHandle, CanvasProps>(({ children, onSizeChange, width, height, onResizeEnd }, ref) => {
+  const [canvasSize, setCanvasSize] = useState({ 
+    width: width ?? window.innerWidth, 
+    height: height ?? window.innerHeight 
+  });
   const [isResizing, setIsResizing] = useState(false);
   const resizeStart = useRef({ x: 0, y: 0, width: 0, height: 0 });
   const scrollContainerRef = useRef<HTMLDivElement>(null);
+
+  const currentSize = useRef(canvasSize);
+
+  // Sync current size ref
+  useEffect(() => {
+    currentSize.current = canvasSize;
+  }, [canvasSize]);
+
+  // Sync from props if not resizing
+  useEffect(() => {
+    if (width && height && !isResizing) {
+      setCanvasSize({ width, height });
+    }
+  }, [width, height, isResizing]);
 
   // Notify parent of size changes
   useEffect(() => {
@@ -113,6 +133,7 @@ export const Canvas = forwardRef<CanvasHandle, CanvasProps>(({ children, onSizeC
 
           const handleUp = () => {
             setIsResizing(false);
+            onResizeEnd?.(currentSize.current.width, currentSize.current.height);
             window.removeEventListener('mousemove', handleMove);
             window.removeEventListener('mouseup', handleUp);
           };
@@ -152,6 +173,7 @@ export const Canvas = forwardRef<CanvasHandle, CanvasProps>(({ children, onSizeC
 
           const handleUp = () => {
             setIsResizing(false);
+            onResizeEnd?.(currentSize.current.width, currentSize.current.height);
             window.removeEventListener('mousemove', handleMove);
             window.removeEventListener('mouseup', handleUp);
           };
@@ -186,6 +208,7 @@ export const Canvas = forwardRef<CanvasHandle, CanvasProps>(({ children, onSizeC
 
           const handleUp = () => {
             setIsResizing(false);
+            onResizeEnd?.(currentSize.current.width, currentSize.current.height);
             window.removeEventListener('mousemove', handleMove);
             window.removeEventListener('mouseup', handleUp);
           };

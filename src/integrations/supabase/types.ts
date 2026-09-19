@@ -21,6 +21,8 @@ export type Database = {
           is_protected: boolean
           slug: string
           title: string
+          width: number | null
+          height: number | null
         }
         Insert: {
           created_at?: string
@@ -28,6 +30,8 @@ export type Database = {
           is_protected?: boolean
           slug: string
           title?: string
+          width?: number | null
+          height?: number | null
         }
         Update: {
           created_at?: string
@@ -35,6 +39,8 @@ export type Database = {
           is_protected?: boolean
           slug?: string
           title?: string
+          width?: number | null
+          height?: number | null
         }
         Relationships: []
       }

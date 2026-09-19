@@ -75,6 +75,30 @@ export function useBoard(slug: string) {
     fetchOrCreate();
   }, [slug, addBoard]);
 
+  // Realtime subscription for board updates (like size)
+  useEffect(() => {
+    if (!supabase || !board) return;
+
+    const channel = supabase.channel(`board_${board.id}`)
+      .on(
+        'postgres_changes',
+        {
+          event: 'UPDATE',
+          schema: 'public',
+          table: 'boards',
+          filter: `id=eq.${board.id}`
+        },
+        (payload) => {
+          setBoard(payload.new as Board);
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [board?.id]);
+
   // Update board title
   const updateTitle = useCallback(async (title: string) => {
     if (!supabase || !board || board.is_protected) return;
@@ -84,6 +108,18 @@ export function useBoard(slug: string) {
     await supabase
       .from('boards')
       .update({ title })
+      .eq('id', board.id);
+  }, [board]);
+
+  // Update board size
+  const updateSize = useCallback(async (width: number, height: number) => {
+    if (!supabase || !board || board.is_protected) return;
+
+    setBoard(prev => prev ? { ...prev, width, height } : null);
+
+    await supabase
+      .from('boards')
+      .update({ width, height })
       .eq('id', board.id);
   }, [board]);
 
@@ -99,5 +135,5 @@ export function useBoard(slug: string) {
     return !deleteError;
   }, [board]);
 
-  return { board, loading, error, updateTitle, deleteBoard };
+  return { board, loading, error, updateTitle, updateSize, deleteBoard };
 }
