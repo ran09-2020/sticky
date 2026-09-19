@@ -6,9 +6,10 @@ interface CanvasProps {
   children: ReactNode;
   onScaleChange?: (scale: number) => void;
   transformRef?: React.RefObject<ReactZoomPanPinchRef | null>;
+  showCenterMarker?: boolean;
 }
 
-export function Canvas({ children, onScaleChange, transformRef }: CanvasProps) {
+export function Canvas({ children, onScaleChange, transformRef, showCenterMarker }: CanvasProps) {
   const localRef = useRef<ReactZoomPanPinchRef>(null);
   const ref = transformRef ?? localRef;
 
@@ -64,12 +65,22 @@ export function Canvas({ children, onScaleChange, transformRef }: CanvasProps) {
         }
       </TransformWrapper>
 
-      {/* Center marker - red + (fixed at screen center) */}
-      <div data-ev-id="ev_61ac7db04a"
-      className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-red-500 font-bold text-5xl select-none pointer-events-none z-10">
-
-        +
-      </div>
+      {/* Center marker - shows when centering */}
+      {showCenterMarker &&
+      <div data-ev-id="ev_a92054b12a" className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-20 pointer-events-none animate-pulse">
+          <div data-ev-id="ev_d994ed4f98" className="relative">
+            {/* Crosshair lines */}
+            <div data-ev-id="ev_9a69d5eb93" className="absolute w-20 h-1 bg-red-500 -translate-x-1/2 -translate-y-1/2 rounded-full" />
+            <div data-ev-id="ev_5269aa0cc9" className="absolute w-1 h-20 bg-red-500 -translate-x-1/2 -translate-y-1/2 rounded-full" />
+            {/* Center circle */}
+            <div data-ev-id="ev_5d3d03aa40" className="absolute w-8 h-8 border-4 border-red-500 rounded-full -translate-x-1/2 -translate-y-1/2" />
+            {/* Label */}
+            <div data-ev-id="ev_30ee2f66a4" className="absolute top-12 left-1/2 -translate-x-1/2 bg-red-500 text-white px-3 py-1 rounded-lg text-sm font-bold whitespace-nowrap">
+              מרכז הלוח
+            </div>
+          </div>
+        </div>
+      }
     </div>);
 
 }

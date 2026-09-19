@@ -27,6 +27,7 @@ export default function Board() {
   const { author, setAuthor } = useAuthor();
 
   const [scale, setScale] = useState(1);
+  const [showCenterMarker, setShowCenterMarker] = useState(false);
   const [toast, setToast] = useState<{message: string;type: 'success' | 'error';} | null>(null);
   const transformRef = useRef<ReactZoomPanPinchRef>(null);
   const canvasContentRef = useRef<HTMLDivElement>(null);
@@ -67,6 +68,11 @@ export default function Board() {
   const handleCreateBoard = useCallback((newSlug: string) => {
     addBoard({ slug: newSlug, title: '' });
   }, [addBoard]);
+
+  const handleCenterView = useCallback(() => {
+    setShowCenterMarker(true);
+    setTimeout(() => setShowCenterMarker(false), 2000);
+  }, []);
 
   // Database not enabled
   if (!supabase) {
@@ -125,7 +131,7 @@ export default function Board() {
 
 
       {/* Canvas */}
-      <Canvas onScaleChange={setScale} transformRef={transformRef}>
+      <Canvas onScaleChange={setScale} transformRef={transformRef} showCenterMarker={showCenterMarker}>
         <div data-ev-id="ev_134a15b931" ref={canvasContentRef}>
           {notes.map((note) =>
           <NoteCard
@@ -151,7 +157,9 @@ export default function Board() {
         transformRef={transformRef}
         onAddNote={handleAddNote}
         onExportPdf={handleExportPdf}
-        onCopyLink={handleCopyLink} />
+        onCopyLink={handleCopyLink}
+        onCenterView={handleCenterView}
+      />
 
 
       {/* Toast notifications */}

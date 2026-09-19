@@ -10,6 +10,7 @@ interface ToolbarProps {
   onAddNote: (type: NoteType, position: {x: number;y: number;}) => void;
   onExportPdf: () => void;
   onCopyLink: () => void;
+  onCenterView: () => void;
 }
 
 export function Toolbar({
@@ -17,7 +18,8 @@ export function Toolbar({
   transformRef,
   onAddNote,
   onExportPdf,
-  onCopyLink
+  onCopyLink,
+  onCenterView,
 }: ToolbarProps) {
   const toolbarRef = useRef<HTMLDivElement>(null);
 
@@ -64,6 +66,7 @@ export function Toolbar({
     const centerY = -(CANVAS_SIZE / 2) + window.innerHeight / 2;
 
     wrapper.setTransform(centerX, centerY, 1, 300);
+    onCenterView();
   };
 
   return (
