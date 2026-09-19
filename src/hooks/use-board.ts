@@ -117,7 +117,7 @@ export function useBoard(slug: string) {
 
   // Update board size
   const updateSize = useCallback(async (width: number, height: number) => {
-    if (!supabase || !board || board.is_protected) return;
+    if (!supabase || !board) return;
 
     setBoard(prev => prev ? { ...prev, width, height } : null);
 
