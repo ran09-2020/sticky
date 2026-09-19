@@ -63,16 +63,15 @@ export default function Board() {
     addBoard({ slug: newSlug, title: '' });
   }, [addBoard]);
 
-  // Handle drop from canvas
-  const handleNoteDrop = useCallback((x: number, y: number, noteType: string) => {
-    const type = noteType as NoteType;
-    // Center the note on the drop point
-    const noteWidth = type === 'sticky' ? 120 : 180;
+  // Handle click on canvas - create a note at click position
+  const handleCanvasClick = useCallback((x: number, y: number) => {
+    // Center the note on the click point
+    const noteWidth = 120;
     const noteHeight = 120;
     const posX = Math.max(0, x - noteWidth / 2);
     const posY = Math.max(0, y - noteHeight / 2);
     
-    addNote(type, { x: posX, y: posY }, author);
+    addNote('sticky', { x: posX, y: posY }, author);
   }, [addNote, author]);
 
   // Database not enabled
@@ -133,7 +132,7 @@ export default function Board() {
 
 
       {/* Canvas */}
-      <Canvas onNoteDrop={handleNoteDrop}>
+      <Canvas onCanvasClick={handleCanvasClick}>
         <div data-ev-id="ev_134a15b931" ref={notesContainerRef} className="absolute inset-0">
           {notes.map((note) =>
           <NoteCard
