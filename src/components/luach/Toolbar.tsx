@@ -8,6 +8,7 @@ interface ToolbarProps {
   onCopyLink: () => void;
   onCenterView: () => void;
   onResetSize: () => void;
+  boardSizePercent: number;
 }
 
 export function Toolbar({
@@ -16,7 +17,8 @@ export function Toolbar({
   onExportPdf,
   onCopyLink,
   onCenterView,
-  onResetSize
+  onResetSize,
+  boardSizePercent
 }: ToolbarProps) {
   return (
     <div data-ev-id="ev_2c38a4b008"
@@ -57,21 +59,26 @@ export function Toolbar({
       </div>
 
       {/* View controls */}
-      <div data-ev-id="ev_659fcc32ed" className="flex items-center gap-1">
-        <button data-ev-id="ev_6208f14ed0"
+      <div data-ev-id="ev_1f0835b9c6" className="flex items-center gap-1 border-l border-gray-200 pl-3">
+        <button data-ev-id="ev_97ebd6ffaf"
         onClick={onCenterView}
         className="p-1.5 hover:bg-gray-100 rounded-lg text-gray-600"
         title="מרכז את התצוגה">
 
           <Crosshair size={18} />
         </button>
-        <button data-ev-id="ev_76086f7f26"
+        <button data-ev-id="ev_0793f0620a"
         onClick={onResetSize}
         className="p-1.5 hover:bg-gray-100 rounded-lg text-gray-600"
         title="החזר לגודל המסך">
 
           <Maximize size={18} />
         </button>
+        <span data-ev-id="ev_ad415300c6" className={`text-xs min-w-[40px] text-center font-medium ${
+        boardSizePercent === 100 ? 'text-green-600' : 'text-blue-600'}`
+        }>
+          {boardSizePercent}%
+        </span>
       </div>
 
       {/* Export & Share */}

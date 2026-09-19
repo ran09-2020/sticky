@@ -7,13 +7,21 @@ export interface CanvasHandle {
 
 interface CanvasProps {
   children: ReactNode;
+  onSizeChange?: (widthPercent: number, heightPercent: number) => void;
 }
 
-export const Canvas = forwardRef<CanvasHandle, CanvasProps>(({ children }, ref) => {
+export const Canvas = forwardRef<CanvasHandle, CanvasProps>(({ children, onSizeChange }, ref) => {
   const [canvasSize, setCanvasSize] = useState({ width: window.innerWidth, height: window.innerHeight });
   const [isResizing, setIsResizing] = useState(false);
   const resizeStart = useRef({ x: 0, y: 0, width: 0, height: 0 });
   const scrollContainerRef = useRef<HTMLDivElement>(null);
+
+  // Notify parent of size changes
+  useEffect(() => {
+    const widthPercent = Math.round((canvasSize.width / window.innerWidth) * 100);
+    const heightPercent = Math.round((canvasSize.height / window.innerHeight) * 100);
+    onSizeChange?.(widthPercent, heightPercent);
+  }, [canvasSize, onSizeChange]);
 
   // Expose centerView and resetSize functions to parent
   useImperativeHandle(ref, () => ({

@@ -27,8 +27,14 @@ export default function Board() {
 
   const [toast, setToast] = useState<{message: string;type: 'success' | 'error';} | null>(null);
   const [selectedNoteType, setSelectedNoteType] = useState<NoteType>('sticky');
+  const [boardSizePercent, setBoardSizePercent] = useState(100);
   const notesContainerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<CanvasHandle>(null);
+
+  const handleSizeChange = useCallback((widthPercent: number, heightPercent: number) => {
+    // Use the average or max of width/height percent
+    setBoardSizePercent(Math.max(widthPercent, heightPercent));
+  }, []);
 
   const handleCenterView = useCallback(() => {
     canvasRef.current?.centerView();
@@ -142,7 +148,7 @@ export default function Board() {
 
 
       {/* Canvas */}
-      <Canvas ref={canvasRef}>
+      <Canvas ref={canvasRef} onSizeChange={handleSizeChange}>
         <div data-ev-id="ev_1bf3cdf1a1"
         ref={notesContainerRef}
         className="absolute inset-0 cursor-crosshair"
@@ -182,7 +188,8 @@ export default function Board() {
         onExportPdf={handleExportPdf}
         onCopyLink={handleCopyLink}
         onCenterView={handleCenterView}
-        onResetSize={handleResetSize} />
+        onResetSize={handleResetSize}
+        boardSizePercent={boardSizePercent} />
 
 
 
