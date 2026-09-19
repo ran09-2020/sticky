@@ -50,8 +50,8 @@ export const Canvas = forwardRef<CanvasHandle, CanvasProps>(({ children }, ref) 
     const handleResizeMove = (e: globalThis.MouseEvent) => {
       const dx = e.clientX - resizeStart.current.x;
       const dy = e.clientY - resizeStart.current.y;
-      const newWidth = Math.max(window.innerWidth, resizeStart.current.width + dx);
-      const newHeight = Math.max(window.innerHeight, resizeStart.current.height + dy);
+      const newWidth = Math.max(window.innerWidth / 2, resizeStart.current.width + dx);
+      const newHeight = Math.max(window.innerHeight / 2, resizeStart.current.height + dy);
       setCanvasSize({ width: newWidth, height: newHeight });
     };
 
@@ -130,7 +130,7 @@ export const Canvas = forwardRef<CanvasHandle, CanvasProps>(({ children }, ref) 
             const dx = ev.clientX - resizeStart.current.x;
             setCanvasSize((prev) => ({
               ...prev,
-              width: Math.max(window.innerWidth, resizeStart.current.width + dx)
+              width: Math.max(window.innerWidth / 2, resizeStart.current.width + dx)
             }));
           };
 
@@ -163,7 +163,7 @@ export const Canvas = forwardRef<CanvasHandle, CanvasProps>(({ children }, ref) 
             const dy = ev.clientY - resizeStart.current.y;
             setCanvasSize((prev) => ({
               ...prev,
-              height: Math.max(window.innerHeight, resizeStart.current.height + dy)
+              height: Math.max(window.innerHeight / 2, resizeStart.current.height + dy)
             }));
           };
 
