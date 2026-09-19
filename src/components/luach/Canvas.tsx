@@ -62,10 +62,13 @@ export const Canvas = forwardRef<CanvasHandle, CanvasProps>(({ children, onSizeC
       });
     },
     resetSize: () => {
-      setCanvasSize({ width: window.innerWidth, height: window.innerHeight });
+      const newWidth = window.innerWidth;
+      const newHeight = window.innerHeight;
+      setCanvasSize({ width: newWidth, height: newHeight });
       scrollContainerRef.current?.scrollTo({ left: 0, top: 0, behavior: 'smooth' });
+      onResizeEnd?.(newWidth, newHeight);
     }
-  }), []);
+  }), [onResizeEnd]);
 
 
 
