@@ -24,8 +24,8 @@ export function Toolbar({
   const getViewportCenter = (): {x: number; y: number;} => {
     const wrapper = transformRef.current;
     
-    // Default: center of canvas
-    const defaultPos = { x: CANVAS_SIZE / 2 - 60, y: CANVAS_SIZE / 2 - 100 };
+    // Default: top area of canvas
+    const defaultPos = { x: 300, y: 200 };
     
     if (!wrapper || !wrapper.state) {
       return defaultPos;
@@ -45,7 +45,7 @@ export function Toolbar({
     const canvasX = (screenX - positionX) / currentScale - 60;
     const canvasY = (screenY - positionY) / currentScale - 60;
 
-    return { x: canvasX, y: canvasY };
+    return { x: Math.max(50, canvasX), y: Math.max(50, canvasY) };
   };
 
   const handleAddNote = (type: NoteType) => {

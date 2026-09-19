@@ -19,9 +19,9 @@ export function Canvas({ children, onScaleChange, transformRef }: CanvasProps) {
     onScaleChange?.(state.scale);
   }, [onScaleChange]);
 
-  // Center the canvas: position so that canvas center aligns with viewport center
-  const initialX = typeof window !== 'undefined' ? -(CANVAS_SIZE - window.innerWidth) / 2 : 0;
-  const initialY = typeof window !== 'undefined' ? -(CANVAS_SIZE - window.innerHeight) / 2 : 0;
+  // Start at top-left of canvas (0,0) so grid fills viewport
+  const initialX = 0;
+  const initialY = 0;
 
   return (
     <TransformWrapper
