@@ -80,8 +80,8 @@ export function NoteCard({
     const handleResizeMove = (e: globalThis.MouseEvent) => {
       const dx = (e.clientX - resizeStart.x) / scale;
       const dy = (e.clientY - resizeStart.y) / scale;
-      // For RTL: dragging left (negative dx) should increase width
-      const newWidth = Math.max(80, resizeStart.width - dx);
+      // Resize follows mouse direction
+      const newWidth = Math.max(80, resizeStart.width + dx);
       const newHeight = Math.max(60, resizeStart.height + dy);
       onResize(note.id, newWidth, newHeight);
     };
@@ -193,10 +193,10 @@ export function NoteCard({
             </div>
           }
 
-          {/* Resize handle */}
+          {/* Resize handle - bottom right */}
           <div data-ev-id="ev_9e18178fab"
           ref={resizeRef}
-          className="no-drag absolute bottom-0 left-0 w-4 h-4 cursor-sw-resize opacity-50 hover:opacity-100"
+          className="no-drag absolute bottom-0 right-0 w-4 h-4 cursor-se-resize opacity-50 hover:opacity-100"
           onMouseDown={handleResizeStart}>
 
             <svg data-ev-id="ev_25e0cfd6ca" viewBox="0 0 24 24" fill="currentColor" className="w-full h-full text-gray-400">
