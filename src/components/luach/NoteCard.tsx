@@ -141,17 +141,20 @@ export function NoteCard({
 
         {/* Main card */}
         <div data-ev-id="ev_56a0ea7d89"
-        className="drag-handle w-full h-full rounded-md cursor-move shadow-md relative overflow-hidden"
+        className="w-full h-full rounded-md shadow-md relative overflow-hidden"
         style={{
           background: colorConfig.gradient,
           boxShadow: '0 4px 6px -1px rgba(0,0,0,0.1), 0 2px 4px -1px rgba(0,0,0,0.06)'
         }}>
 
+          {/* Drag handle area at top */}
+          <div data-ev-id="ev_de0e4cee2b" className="drag-handle absolute top-0 left-0 right-0 h-6 cursor-move z-20" />
+
           {/* Card lines */}
           {isCard &&
           <>
-              <div data-ev-id="ev_8661509cfa" className="absolute top-0 left-0 right-0 h-4 bg-red-400/70 pointer-events-none" />
-              <div data-ev-id="ev_45c2564a4b" className="absolute top-6 left-0 right-0 bottom-0 pointer-events-none" style={{
+              <div data-ev-id="ev_9a4032eee2" className="absolute top-0 left-0 right-0 h-4 bg-red-400/70 pointer-events-none" />
+              <div data-ev-id="ev_162986cdf9" className="absolute top-6 left-0 right-0 bottom-0 pointer-events-none" style={{
               backgroundImage: 'repeating-linear-gradient(transparent, transparent 23px, #93c5fd 23px, #93c5fd 24px)',
               backgroundPosition: '0 0'
             }} />
@@ -174,10 +177,9 @@ export function NoteCard({
           onChange={(e) => handleTextChange(e.target.value)}
           onMouseDown={(e) => e.stopPropagation()}
           onClick={(e) => e.stopPropagation()}
-          className="no-drag w-full h-full bg-transparent border-none outline-none resize-none p-2 text-gray-800 text-sm leading-relaxed relative z-10"
+          className="no-drag absolute top-6 left-0 right-0 bottom-0 bg-transparent border-none outline-none resize-none p-2 text-gray-800 text-sm leading-relaxed"
           style={{
             fontFamily,
-            paddingTop: isCard ? '28px' : '8px',
             lineHeight: isCard ? '24px' : undefined
           }}
           placeholder="הקלד כאן..."
@@ -197,7 +199,7 @@ export function NoteCard({
           {/* Resize handle - bottom right */}
           <div data-ev-id="ev_9e18178fab"
           ref={resizeRef}
-          className="no-drag absolute bottom-0 right-0 w-4 h-4 cursor-se-resize opacity-50 hover:opacity-100"
+          className="no-drag absolute bottom-0 right-0 w-4 h-4 cursor-se-resize opacity-50 hover:opacity-100 z-30"
           onMouseDown={handleResizeStart}>
 
             <svg data-ev-id="ev_25e0cfd6ca" viewBox="0 0 24 24" fill="currentColor" className="w-full h-full text-gray-400">
