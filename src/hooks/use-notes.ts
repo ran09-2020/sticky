@@ -3,7 +3,7 @@ import { supabase } from '@/integrations/supabase/client';
 import type { Note, NoteInsert, NoteUpdate, NoteType, NoteColor, NoteFont, Sticker } from '@/types/luach';
 import { DEFAULT_STICKY_SIZE, DEFAULT_CARD_SIZE } from '@/types/luach';
 
-export function useNotes(boardId: string | undefined) {
+export function useNotes(boardId: string | undefined, topicId: string = 'default') {
   const [notes, setNotes] = useState<Note[]>([]);
   const [loading, setLoading] = useState(true);
   const maxZIndex = useRef(1);
@@ -18,6 +18,7 @@ export function useNotes(boardId: string | undefined) {
         .from('notes')
         .select('*')
         .eq('board_id', boardId)
+        .eq('topic_id', topicId)
         .order('z_index', { ascending: true });
 
       const notesList = data ?? [];
@@ -27,20 +28,21 @@ export function useNotes(boardId: string | undefined) {
     };
 
     fetchNotes();
-  }, [boardId]);
+  }, [boardId, topicId]);
 
   // Subscribe to realtime changes
   useEffect(() => {
-    if (!supabase || !boardId) return;
+    if (!supabase || !boardId || !topicId) return;
 
     const channel = supabase
-      .channel(`notes:${boardId}`)
+      .channel(`notes:${boardId}:${topicId}`)
       .on(
         'postgres_changes',
         { event: '*', schema: 'public', table: 'notes', filter: `board_id=eq.${boardId}` },
         (payload) => {
           if (payload.eventType === 'INSERT') {
             const newNote = payload.new as Note;
+            if (newNote.topic_id !== topicId) return;
             setNotes(prev => {
               if (prev.some(n => n.id === newNote.id)) return prev;
               maxZIndex.current = Math.max(maxZIndex.current, newNote.z_index);
@@ -48,7 +50,16 @@ export function useNotes(boardId: string | undefined) {
             });
           } else if (payload.eventType === 'UPDATE') {
             const updated = payload.new as Note;
-            setNotes(prev => prev.map(n => n.id === updated.id ? updated : n));
+            if (updated.topic_id !== topicId) {
+              setNotes(prev => prev.filter(n => n.id !== updated.id));
+              return;
+            }
+            setNotes(prev => {
+              if (!prev.some(n => n.id === updated.id)) {
+                return [...prev, updated];
+              }
+              return prev.map(n => n.id === updated.id ? updated : n);
+            });
             maxZIndex.current = Math.max(maxZIndex.current, updated.z_index);
           } else if (payload.eventType === 'DELETE') {
             const deleted = payload.old as Note;
@@ -61,7 +72,7 @@ export function useNotes(boardId: string | undefined) {
     return () => {
       supabase.removeChannel(channel);
     };
-  }, [boardId]);
+  }, [boardId, topicId]);
 
   // Add note
   const addNote = useCallback(async (
@@ -77,6 +88,7 @@ export function useNotes(boardId: string | undefined) {
 
     const noteData: NoteInsert = {
       board_id: boardId,
+      topic_id: topicId,
       type,
       x: position.x,
       y: position.y,
@@ -91,6 +103,7 @@ export function useNotes(boardId: string | undefined) {
     const tempNote: Note = {
       id: tempId,
       board_id: boardId,
+      topic_id: topicId,
       text: '',
       x: position.x,
       y: position.y,
@@ -116,7 +129,7 @@ export function useNotes(boardId: string | undefined) {
     if (data) {
       setNotes(prev => prev.map(n => n.id === tempId ? data : n));
     }
-  }, [boardId]);
+  }, [boardId, topicId]);
 
   // Update note
   const updateNote = useCallback(async (id: string, updates: NoteUpdate) => {
@@ -198,8 +211,9 @@ export function useNotes(boardId: string | undefined) {
     await supabase
       .from('notes')
       .delete()
-      .eq('board_id', boardId);
-  }, [boardId]);
+      .eq('board_id', boardId)
+      .eq('topic_id', topicId);
+  }, [boardId, topicId]);
 
   return {
     notes,

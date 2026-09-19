@@ -1,4 +1,4 @@
-import { useState, useCallback, useRef } from 'react';
+import { useState, useCallback, useRef, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router';
 import { supabase } from '@/integrations/supabase/client';
 import { useBoard } from '@/hooks/use-board';
@@ -10,19 +10,33 @@ import { NoteCard } from '@/components/luach/NoteCard';
 import { Toolbar } from '@/components/luach/Toolbar';
 import { Sidebar } from '@/components/luach/Sidebar';
 import { Header } from '@/components/luach/Header';
+import { BoardTabs } from '@/components/luach/BoardTabs';
 import { Toast } from '@/components/luach/Toast';
 import { ConfirmModal } from '@/components/luach/ConfirmModal';
 import { exportToPdf } from '@/lib/export-pdf';
 import { copyToClipboard } from '@/lib/copy-to-clipboard';
-import type { NoteType, NoteColor, NoteFont, Sticker } from '@/types/luach';
+import type { NoteType, NoteColor, NoteFont, Sticker, BoardTopic } from '@/types/luach';
 import { Loader2 } from 'lucide-react';
 
 export default function Board() {
   const { slug = 'public' } = useParams<{slug: string;}>();
   const navigate = useNavigate();
 
-  const { board, loading: boardLoading, error, updateTitle, updateSize, deleteBoard } = useBoard(slug);
-  const { notes, loading: notesLoading, addNote, moveNote, resizeNote, updateText, changeColor, changeFont, toggleSticker, bringToFront, deleteNote, deleteAllNotes } = useNotes(board?.id);
+  const { board, loading: boardLoading, error, updateTitle, updateSize, deleteBoard, addTopic, renameTopic, removeTopic } = useBoard(slug);
+  
+  const [activeTopicId, setActiveTopicId] = useState<string>('default');
+
+  // Reset active topic when board changes
+  useEffect(() => {
+    if (board && board.topics) {
+      const topics = board.topics as unknown as BoardTopic[];
+      if (topics.length > 0) {
+        setActiveTopicId(topics[0].id);
+      }
+    }
+  }, [board?.id]);
+
+  const { notes, loading: notesLoading, addNote, moveNote, resizeNote, updateText, changeColor, changeFont, toggleSticker, bringToFront, deleteNote, deleteAllNotes } = useNotes(board?.id, activeTopicId);
   const { boards: localBoards, addBoard, removeBoard } = useLocalBoards();
   const { author, setAuthor } = useAuthor();
 
@@ -141,6 +155,27 @@ export default function Board() {
         isProtected={board.is_protected}
         onTitleChange={updateTitle}
         onAuthorChange={setAuthor} />
+
+      {/* Tabs */}
+      <BoardTabs
+        topics={(board.topics as unknown as BoardTopic[]) || [{ id: 'default', name: 'ראשי' }]}
+        activeTopicId={activeTopicId}
+        onSelectTopic={setActiveTopicId}
+        onAddTopic={async (name) => {
+          const id = await addTopic(name);
+          if (id) setActiveTopicId(id);
+        }}
+        onRenameTopic={renameTopic}
+        onRemoveTopic={(id) => {
+          removeTopic(id);
+          const topics = (board.topics as unknown as BoardTopic[]) || [];
+          const otherTopic = topics.find(t => t.id !== id);
+          if (otherTopic) {
+            setActiveTopicId(otherTopic.id);
+          }
+        }}
+        isProtected={board.is_protected}
+      />
 
 
       {/* Sidebar */}

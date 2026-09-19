@@ -21,6 +21,7 @@ export type Database = {
           is_protected: boolean
           slug: string
           title: string
+          topics: Json | null
           width: number | null
           height: number | null
         }
@@ -30,6 +31,7 @@ export type Database = {
           is_protected?: boolean
           slug: string
           title?: string
+          topics?: Json | null
           width?: number | null
           height?: number | null
         }
@@ -39,6 +41,7 @@ export type Database = {
           is_protected?: boolean
           slug?: string
           title?: string
+          topics?: Json | null
           width?: number | null
           height?: number | null
         }
@@ -55,6 +58,7 @@ export type Database = {
           id: string
           stickers: string[]
           text: string
+          topic_id: string
           type: string
           updated_at: string
           width: number
@@ -72,6 +76,7 @@ export type Database = {
           id?: string
           stickers?: string[]
           text?: string
+          topic_id?: string
           type?: string
           updated_at?: string
           width?: number
@@ -89,6 +94,7 @@ export type Database = {
           id?: string
           stickers?: string[]
           text?: string
+          topic_id?: string
           type?: string
           updated_at?: string
           width?: number

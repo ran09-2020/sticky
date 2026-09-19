@@ -13,6 +13,12 @@ export type NoteColor = 'yellow' | 'blue' | 'green' | 'pink' | 'white';
 export type NoteFont = 'base' | 'hand' | 'round';
 export type Sticker = 'star' | 'dot' | 'smiley';
 
+// Board Topic
+export interface BoardTopic {
+  id: string;
+  name: string;
+}
+
 // Local storage board history
 export interface LocalBoard {
   slug: string;

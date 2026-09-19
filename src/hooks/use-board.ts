@@ -1,6 +1,6 @@
 import { useState, useEffect, useCallback } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-import type { Board, BoardInsert } from '@/types/luach';
+import type { Board, BoardInsert, BoardTopic } from '@/types/luach';
 import { useLocalBoards } from '@/hooks/use-local-boards';
 
 export function useBoard(slug: string) {
@@ -40,7 +40,11 @@ export function useBoard(slug: string) {
       // Create new board
       const { data: created, error: createError } = await supabase
         .from('boards')
-        .insert({ slug, title: '' } as BoardInsert)
+        .insert({ 
+          slug, 
+          title: '',
+          topics: [{ id: 'default', name: 'ראשי' }] as any
+        } as BoardInsert)
         .select()
         .single();
 
@@ -135,5 +139,45 @@ export function useBoard(slug: string) {
     return !deleteError;
   }, [board]);
 
-  return { board, loading, error, updateTitle, updateSize, deleteBoard };
+  // Topics management
+  const updateTopics = useCallback(async (newTopics: BoardTopic[]) => {
+    if (!supabase || !board || board.is_protected) return;
+    setBoard(prev => prev ? { ...prev, topics: newTopics as any } : null);
+    await supabase.from('boards').update({ topics: newTopics as any }).eq('id', board.id);
+  }, [board]);
+
+  const addTopic = useCallback(async (name: string) => {
+    if (!board) return;
+    const currentTopics = (board.topics as unknown as BoardTopic[] | null) || [{ id: 'default', name: 'ראשי' }];
+    const newTopic = { id: crypto.randomUUID(), name };
+    await updateTopics([...currentTopics, newTopic]);
+    return newTopic.id;
+  }, [board, updateTopics]);
+
+  const renameTopic = useCallback(async (id: string, name: string) => {
+    if (!board) return;
+    const currentTopics = (board.topics as unknown as BoardTopic[] | null) || [{ id: 'default', name: 'ראשי' }];
+    const newTopics = currentTopics.map(t => t.id === id ? { ...t, name } : t);
+    await updateTopics(newTopics);
+  }, [board, updateTopics]);
+
+  const removeTopic = useCallback(async (id: string) => {
+    if (!board) return;
+    const currentTopics = (board.topics as unknown as BoardTopic[] | null) || [{ id: 'default', name: 'ראשי' }];
+    if (currentTopics.length <= 1) return; // Don't delete the last topic
+    const newTopics = currentTopics.filter(t => t.id !== id);
+    await updateTopics(newTopics);
+  }, [board, updateTopics]);
+
+  return { 
+    board, 
+    loading, 
+    error, 
+    updateTitle, 
+    updateSize, 
+    deleteBoard,
+    addTopic,
+    renameTopic,
+    removeTopic
+  };
 }
