@@ -1,4 +1,4 @@
-import { Download, Link2, StickyNote, FileText, Crosshair, Maximize } from 'lucide-react';
+import { Download, Link2, StickyNote, FileText, Crosshair, Maximize, Trash2 } from 'lucide-react';
 import type { NoteType } from '@/types/luach';
 
 interface ToolbarProps {
@@ -8,6 +8,7 @@ interface ToolbarProps {
   onCopyLink: () => void;
   onCenterView: () => void;
   onResetSize: () => void;
+  onDeleteAll: () => void;
   boardSizePercent: number;
 }
 
@@ -18,6 +19,7 @@ export function Toolbar({
   onCopyLink,
   onCenterView,
   onResetSize,
+  onDeleteAll,
   boardSizePercent
 }: ToolbarProps) {
   return (
@@ -83,6 +85,12 @@ export function Toolbar({
 
       {/* Export & Share */}
       <div data-ev-id="ev_67f0048f7c" className="flex items-center gap-1 border-r border-gray-200 pr-3">
+        <button
+        onClick={onDeleteAll}
+        className="p-1.5 hover:bg-red-100 rounded-lg text-red-600 transition-colors"
+        title="נקה לוח">
+          <Trash2 size={18} />
+        </button>
         <button data-ev-id="ev_96ae76a6fa"
         onClick={onCopyLink}
         className="p-1.5 hover:bg-gray-100 rounded-lg text-gray-600"

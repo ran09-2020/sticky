@@ -188,6 +188,19 @@ export function useNotes(boardId: string | undefined) {
       .eq('id', id);
   }, []);
 
+  // Delete all notes
+  const deleteAllNotes = useCallback(async () => {
+    if (!supabase || !boardId) return;
+
+    // Optimistic update
+    setNotes([]);
+
+    await supabase
+      .from('notes')
+      .delete()
+      .eq('board_id', boardId);
+  }, [boardId]);
+
   return {
     notes,
     loading,
@@ -201,5 +214,6 @@ export function useNotes(boardId: string | undefined) {
     toggleSticker,
     bringToFront,
     deleteNote,
+    deleteAllNotes,
   };
 }

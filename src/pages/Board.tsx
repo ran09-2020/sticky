@@ -21,7 +21,7 @@ export default function Board() {
   const navigate = useNavigate();
 
   const { board, loading: boardLoading, error, updateTitle, deleteBoard } = useBoard(slug);
-  const { notes, loading: notesLoading, addNote, moveNote, resizeNote, updateText, changeColor, changeFont, toggleSticker, bringToFront, deleteNote } = useNotes(board?.id);
+  const { notes, loading: notesLoading, addNote, moveNote, resizeNote, updateText, changeColor, changeFont, toggleSticker, bringToFront, deleteNote, deleteAllNotes } = useNotes(board?.id);
   const { boards: localBoards, addBoard, removeBoard } = useLocalBoards();
   const { author, setAuthor } = useAuthor();
 
@@ -44,7 +44,11 @@ export default function Board() {
     canvasRef.current?.resetSize();
   }, []);
 
-
+  const handleDeleteAllNotes = useCallback(() => {
+    if (window.confirm('האם אתה בטוח שברצונך למחוק את כל הפתקים? פעולה זו בלתי הפיכה.')) {
+      deleteAllNotes();
+    }
+  }, [deleteAllNotes]);
 
   const handleExportPdf = useCallback(async () => {
     const contentEl = notesContainerRef.current;
@@ -189,6 +193,7 @@ export default function Board() {
         onCopyLink={handleCopyLink}
         onCenterView={handleCenterView}
         onResetSize={handleResetSize}
+        onDeleteAll={handleDeleteAllNotes}
         boardSizePercent={boardSizePercent} />
 
 
