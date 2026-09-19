@@ -13,33 +13,38 @@ export function Canvas({ children, onScaleChange, transformRef }: CanvasProps) {
   const ref = transformRef ?? localRef;
 
   const handleTransform = useCallback((
-    _ref: ReactZoomPanPinchRef,
-    state: { scale: number }
-  ) => {
+  _ref: ReactZoomPanPinchRef,
+  state: {scale: number;}) =>
+  {
     onScaleChange?.(state.scale);
   }, [onScaleChange]);
 
-  // Start at top-left of canvas (0,0) so grid fills viewport
-  const initialX = 0;
-  const initialY = 0;
-
   return (
-    <TransformWrapper
-      ref={ref}
-      initialScale={1}
-      minScale={MIN_ZOOM}
-      maxScale={MAX_ZOOM}
-      limitToBounds={false}
-      wheel={{ step: 0.05 }}
-      panning={{ velocityDisabled: true, excluded: ['no-drag'] }}
-      onTransform={handleTransform}
-      initialPositionX={initialX}
-      initialPositionY={initialY}
-    >
+    <div data-ev-id="ev_fddbdf4c98"
+    className="w-full h-full relative"
+    style={{
+      backgroundImage: `
+          linear-gradient(to right, #d1d5db 1px, transparent 1px),
+          linear-gradient(to bottom, #d1d5db 1px, transparent 1px)
+        `,
+      backgroundSize: '40px 40px',
+      backgroundColor: '#f3f4f6'
+    }}>
 
-      {({ zoomIn, zoomOut, resetTransform }) =>
-      <>
-          <TransformComponent
+      <TransformWrapper
+        ref={ref}
+        initialScale={1}
+        minScale={MIN_ZOOM}
+        maxScale={MAX_ZOOM}
+        limitToBounds={false}
+        wheel={{ step: 0.05 }}
+        panning={{ velocityDisabled: true, excluded: ['no-drag'] }}
+        onTransform={handleTransform}
+        initialPositionX={0}
+        initialPositionY={0}>
+
+        {() =>
+        <TransformComponent
           wrapperStyle={{
             width: '100%',
             height: '100%',
@@ -51,29 +56,26 @@ export function Canvas({ children, onScaleChange, transformRef }: CanvasProps) {
             height: CANVAS_SIZE
           }}>
 
-            {/* Grid background */}
-            <div data-ev-id="ev_e5227cf1ad"
-          className="absolute inset-0"
+            {/* Transparent canvas area */}
+            <div data-ev-id="ev_83b6183323" className="absolute inset-0" />
+
+            {/* Center marker - red + */}
+            <div data-ev-id="ev_95b42248f7"
+          className="absolute flex items-center justify-center text-red-500 font-bold text-4xl select-none pointer-events-none"
           style={{
-            backgroundImage: `
-                  linear-gradient(to right, #e5e7eb 1px, transparent 1px),
-                  linear-gradient(to bottom, #e5e7eb 1px, transparent 1px)
-                `,
-            backgroundSize: '40px 40px',
-            backgroundColor: '#f9fafb'
-          }} />
+            left: CANVAS_SIZE / 2 - 20,
+            top: CANVAS_SIZE / 2 - 20,
+            width: 40,
+            height: 40
+          }}>
+
+              +
+            </div>
 
             {children}
           </TransformComponent>
-
-          {/* Zoom controls - accessible via ref */}
-          <div data-ev-id="ev_1e14cbf6fc" className="hidden">
-            <button data-ev-id="ev_21ff7a3da6" data-zoom-in onClick={() => zoomIn(0.2)}>+</button>
-            <button data-ev-id="ev_06ca447001" data-zoom-out onClick={() => zoomOut(0.2)}>-</button>
-            <button data-ev-id="ev_a0988072b1" data-reset onClick={() => resetTransform()}>↻</button>
-          </div>
-        </>
-      }
-    </TransformWrapper>);
+        }
+      </TransformWrapper>
+    </div>);
 
 }

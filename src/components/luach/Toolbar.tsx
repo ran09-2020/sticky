@@ -24,28 +24,28 @@ export function Toolbar({
   const getViewportCenter = (): {x: number; y: number;} => {
     const wrapper = transformRef.current;
     
-    // Default: top area of canvas
-    const defaultPos = { x: 300, y: 200 };
+    // Get viewport dimensions
+    const viewportWidth = window.innerWidth;
+    const viewportHeight = window.innerHeight;
+    
+    // Default: center of visible screen area
+    const defaultPos = { x: viewportWidth / 2 - 60, y: viewportHeight / 2 - 100 };
     
     if (!wrapper || !wrapper.state) {
       return defaultPos;
     }
 
     const { positionX, positionY, scale: currentScale } = wrapper.state;
-
-    // Get viewport dimensions
-    const viewportWidth = window.innerWidth;
-    const viewportHeight = window.innerHeight;
     
-    // Position above toolbar (bottom center of visible area)
+    // Screen center, slightly above middle (above toolbar)
     const screenX = viewportWidth / 2;
-    const screenY = viewportHeight - 200; // Above the toolbar
+    const screenY = viewportHeight / 2 - 50;
 
     // Convert screen coordinates to canvas coordinates
     const canvasX = (screenX - positionX) / currentScale - 60;
     const canvasY = (screenY - positionY) / currentScale - 60;
 
-    return { x: Math.max(50, canvasX), y: Math.max(50, canvasY) };
+    return { x: Math.max(20, canvasX), y: Math.max(20, canvasY) };
   };
 
   const handleAddNote = (type: NoteType) => {
