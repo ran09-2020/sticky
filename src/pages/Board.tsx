@@ -139,6 +139,7 @@ export default function Board() {
 
       {/* Header */}
       <Header
+        slug={slug}
         title={board.title}
         author={author}
         isProtected={board.is_protected}

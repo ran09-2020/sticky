@@ -1,6 +1,7 @@
 import { useState, useRef, useEffect } from 'react';
 
 interface HeaderProps {
+  slug: string;
   title: string;
   author: string;
   isProtected: boolean;
@@ -9,6 +10,7 @@ interface HeaderProps {
 }
 
 export function Header({
+  slug,
   title,
   author,
   isProtected,
@@ -42,8 +44,19 @@ export function Header({
     className="fixed top-4 left-1/2 -translate-x-1/2 bg-white/95 backdrop-blur rounded-xl shadow-lg px-4 py-2 flex items-center gap-4 z-40"
     dir="rtl">
 
-      {/* Title */}
+      {/* Board Name */}
+      <div className="flex items-center gap-2">
+        <span className="text-sm font-bold text-gray-800">
+          לוח: {slug.toUpperCase()}
+        </span>
+      </div>
+
+      {/* Divider */}
+      <div className="w-px h-4 bg-gray-300" />
+
+      {/* Topic */}
       <div data-ev-id="ev_01c6118ad4" className="flex items-center gap-2">
+        <label className="text-xs text-gray-500">נושא:</label>
         {editingTitle && !isProtected ?
         <input data-ev-id="ev_a5d5ac2aed"
         ref={titleInputRef}
@@ -53,7 +66,7 @@ export function Header({
         onBlur={handleTitleSubmit}
         onKeyDown={(e) => e.key === 'Enter' && handleTitleSubmit()}
         className="px-2 py-0.5 border rounded text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
-        placeholder="שם הלוח" /> :
+        placeholder="נושא הלוח" /> :
 
 
         <h1 data-ev-id="ev_2e71df04da"
@@ -63,7 +76,7 @@ export function Header({
         onClick={() => !isProtected && setEditingTitle(true)}
         title={!isProtected ? 'לחץ לעריכה' : undefined}>
 
-            {title || 'לוח ללא שם'}
+            {title || 'ללא נושא'}
           </h1>
         }
       </div>
