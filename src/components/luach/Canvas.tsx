@@ -1,13 +1,36 @@
-import { useState, useRef, useEffect, type ReactNode, type MouseEvent } from 'react';
+import { useState, useRef, useEffect, useImperativeHandle, forwardRef, type ReactNode, type MouseEvent } from 'react';
+
+export interface CanvasHandle {
+  centerView: () => void;
+}
 
 interface CanvasProps {
   children: ReactNode;
 }
 
-export function Canvas({ children }: CanvasProps) {
+export const Canvas = forwardRef<CanvasHandle, CanvasProps>(({ children }, ref) => {
   const [canvasSize, setCanvasSize] = useState({ width: window.innerWidth, height: window.innerHeight });
   const [isResizing, setIsResizing] = useState(false);
   const resizeStart = useRef({ x: 0, y: 0, width: 0, height: 0 });
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+
+  // Expose centerView function to parent
+  useImperativeHandle(ref, () => ({
+    centerView: () => {
+      const container = scrollContainerRef.current;
+      if (!container) return;
+
+      // Scroll to center of canvas
+      const scrollX = (canvasSize.width - container.clientWidth) / 2;
+      const scrollY = (canvasSize.height - container.clientHeight) / 2;
+
+      container.scrollTo({
+        left: Math.max(0, scrollX),
+        top: Math.max(0, scrollY),
+        behavior: 'smooth'
+      });
+    }
+  }), [canvasSize]);
 
   const handleResizeStart = (e: MouseEvent) => {
     e.preventDefault();
@@ -45,8 +68,11 @@ export function Canvas({ children }: CanvasProps) {
   }, [isResizing]);
 
   return (
-    <div data-ev-id="ev_ebc66d200a" className="absolute inset-0 overflow-auto">
-      <div data-ev-id="ev_2af96531a8"
+    <div data-ev-id="ev_c80e5515a1"
+    ref={scrollContainerRef}
+    className="absolute inset-0 overflow-auto">
+
+      <div data-ev-id="ev_ceddbbc51e"
       className="relative"
       style={{
         width: canvasSize.width,
@@ -62,7 +88,7 @@ export function Canvas({ children }: CanvasProps) {
       }}>
 
         {/* Center marker */}
-        <div data-ev-id="ev_b1f4908e3f"
+        <div data-ev-id="ev_371056db9a"
         className="absolute text-red-500 text-6xl font-bold pointer-events-none select-none z-10"
         style={{
           left: canvasSize.width / 2,
@@ -76,18 +102,18 @@ export function Canvas({ children }: CanvasProps) {
         {children}
 
         {/* Resize handle - bottom right corner */}
-        <div data-ev-id="ev_dd06ee98e0"
+        <div data-ev-id="ev_9049b8c1f6"
         className="absolute bottom-0 right-0 w-6 h-6 cursor-se-resize z-50 flex items-center justify-center"
         onMouseDown={handleResizeStart}
         title="גרור להגדלת הלוח">
 
-          <svg data-ev-id="ev_4cc0345b77" viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4 text-gray-400 hover:text-gray-600">
-            <path data-ev-id="ev_5222867517" d="M22 22H20V20H22V22ZM22 18H20V16H22V18ZM18 22H16V20H18V22ZM22 14H20V12H22V14ZM18 18H16V16H18V18ZM14 22H12V20H14V22ZM22 10H20V8H22V10ZM18 14H16V12H18V14ZM14 18H12V16H14V18ZM10 22H8V20H10V22Z" />
+          <svg data-ev-id="ev_aafcb9fdf5" viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4 text-gray-400 hover:text-gray-600">
+            <path data-ev-id="ev_42213c3ff1" d="M22 22H20V20H22V22ZM22 18H20V16H22V18ZM18 22H16V20H18V22ZM22 14H20V12H22V14ZM18 18H16V16H18V18ZM14 22H12V20H14V22ZM22 10H20V8H22V10ZM18 14H16V12H18V14ZM14 18H12V16H14V18ZM10 22H8V20H10V22Z" />
           </svg>
         </div>
 
         {/* Right edge resize handle */}
-        <div data-ev-id="ev_c9a03419fe"
+        <div data-ev-id="ev_db64dda97e"
         className="absolute top-0 right-0 w-2 h-full cursor-e-resize z-40 hover:bg-blue-400/30"
         onMouseDown={(e) => {
           e.preventDefault();
@@ -120,7 +146,7 @@ export function Canvas({ children }: CanvasProps) {
 
 
         {/* Bottom edge resize handle */}
-        <div data-ev-id="ev_7406ddf8d8"
+        <div data-ev-id="ev_30b7e23fc0"
         className="absolute bottom-0 left-0 w-full h-2 cursor-s-resize z-40 hover:bg-blue-400/30"
         onMouseDown={(e) => {
           e.preventDefault();
@@ -154,4 +180,6 @@ export function Canvas({ children }: CanvasProps) {
       </div>
     </div>);
 
-}
+});
+
+Canvas.displayName = 'Canvas';

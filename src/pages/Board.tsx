@@ -5,7 +5,7 @@ import { useBoard } from '@/hooks/use-board';
 import { useNotes } from '@/hooks/use-notes';
 import { useLocalBoards } from '@/hooks/use-local-boards';
 import { useAuthor } from '@/hooks/use-author';
-import { Canvas } from '@/components/luach/Canvas';
+import { Canvas, type CanvasHandle } from '@/components/luach/Canvas';
 import { NoteCard } from '@/components/luach/NoteCard';
 import { Toolbar } from '@/components/luach/Toolbar';
 import { Sidebar } from '@/components/luach/Sidebar';
@@ -28,6 +28,11 @@ export default function Board() {
   const [toast, setToast] = useState<{message: string;type: 'success' | 'error';} | null>(null);
   const [selectedNoteType, setSelectedNoteType] = useState<NoteType>('sticky');
   const notesContainerRef = useRef<HTMLDivElement>(null);
+  const canvasRef = useRef<CanvasHandle>(null);
+
+  const handleCenterView = useCallback(() => {
+    canvasRef.current?.centerView();
+  }, []);
 
 
 
@@ -133,7 +138,7 @@ export default function Board() {
 
 
       {/* Canvas */}
-      <Canvas>
+      <Canvas ref={canvasRef}>
         <div data-ev-id="ev_1bf3cdf1a1"
         ref={notesContainerRef}
         className="absolute inset-0 cursor-crosshair"
@@ -171,7 +176,8 @@ export default function Board() {
         selectedType={selectedNoteType}
         onTypeSelect={setSelectedNoteType}
         onExportPdf={handleExportPdf}
-        onCopyLink={handleCopyLink} />
+        onCopyLink={handleCopyLink}
+        onCenterView={handleCenterView} />
 
 
 

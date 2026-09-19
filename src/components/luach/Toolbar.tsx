@@ -1,4 +1,4 @@
-import { Download, Link2, StickyNote, FileText } from 'lucide-react';
+import { Download, Link2, StickyNote, FileText, Crosshair } from 'lucide-react';
 import type { NoteType } from '@/types/luach';
 
 interface ToolbarProps {
@@ -6,13 +6,15 @@ interface ToolbarProps {
   onTypeSelect: (type: NoteType) => void;
   onExportPdf: () => void;
   onCopyLink: () => void;
+  onCenterView: () => void;
 }
 
 export function Toolbar({
   selectedType,
   onTypeSelect,
   onExportPdf,
-  onCopyLink
+  onCopyLink,
+  onCenterView
 }: ToolbarProps) {
   return (
     <div data-ev-id="ev_2c38a4b008"
@@ -48,9 +50,18 @@ export function Toolbar({
       </div>
 
       {/* Instructions */}
-      <div data-ev-id="ev_72ba3d7408" className="text-xs text-gray-500">
+      <div data-ev-id="ev_fa6a4dfffb" className="text-xs text-gray-500">
         לחץ על הלוח להוספה
       </div>
+
+      {/* Center button */}
+      <button data-ev-id="ev_175790d17b"
+      onClick={onCenterView}
+      className="p-1.5 hover:bg-gray-100 rounded-lg text-gray-600"
+      title="מרכז את התצוגה">
+
+        <Crosshair size={18} />
+      </button>
 
       {/* Export & Share */}
       <div data-ev-id="ev_67f0048f7c" className="flex items-center gap-1 border-r border-gray-200 pr-3">
