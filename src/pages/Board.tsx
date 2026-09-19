@@ -79,21 +79,22 @@ export default function Board() {
     if (!noteType) return;
 
     const wrapper = transformRef.current;
-    const state = wrapper?.state;
+    if (!wrapper) return;
 
-    const positionX = state?.positionX ?? 0;
-    const positionY = state?.positionY ?? 0;
-    const currentScale = state?.scale ?? 1;
+    // Get the content element (the actual canvas)
+    const contentEl = wrapper.instance.contentComponent;
+    if (!contentEl) return;
+
+    const rect = contentEl.getBoundingClientRect();
+    const scale = wrapper.state?.scale ?? 1;
 
     // Note dimensions (to center the note at drop point)
     const noteWidth = noteType === 'sticky' ? 120 : 180;
     const noteHeight = 120;
 
-    // Convert drop position to canvas coordinates
-    // e.clientX/Y are screen coordinates
-    // We need to reverse the transform: canvas = (screen - position) / scale
-    const canvasX = (e.clientX - positionX) / currentScale - noteWidth / 2;
-    const canvasY = (e.clientY - positionY) / currentScale - noteHeight / 2;
+    // Calculate position relative to the canvas content
+    const canvasX = (e.clientX - rect.left) / scale - noteWidth / 2;
+    const canvasY = (e.clientY - rect.top) / scale - noteHeight / 2;
 
     addNote(noteType, { x: Math.max(0, canvasX), y: Math.max(0, canvasY) }, author);
   }, [addNote, author]);
