@@ -11,6 +11,7 @@ import { Toolbar } from '@/components/luach/Toolbar';
 import { Sidebar } from '@/components/luach/Sidebar';
 import { Header } from '@/components/luach/Header';
 import { Toast } from '@/components/luach/Toast';
+import { ConfirmModal } from '@/components/luach/ConfirmModal';
 import { exportToPdf } from '@/lib/export-pdf';
 import { copyToClipboard } from '@/lib/copy-to-clipboard';
 import type { NoteType, NoteColor, NoteFont, Sticker } from '@/types/luach';
@@ -28,6 +29,7 @@ export default function Board() {
   const [toast, setToast] = useState<{message: string;type: 'success' | 'error';} | null>(null);
   const [selectedNoteType, setSelectedNoteType] = useState<NoteType>('sticky');
   const [boardSizePercent, setBoardSizePercent] = useState(100);
+  const [isConfirmModalOpen, setIsConfirmModalOpen] = useState(false);
   const notesContainerRef = useRef<HTMLDivElement>(null);
   const canvasRef = useRef<CanvasHandle>(null);
 
@@ -45,9 +47,12 @@ export default function Board() {
   }, []);
 
   const handleDeleteAllNotes = useCallback(() => {
-    if (window.confirm('האם אתה בטוח שברצונך למחוק את כל הפתקים? פעולה זו בלתי הפיכה.')) {
-      deleteAllNotes();
-    }
+    setIsConfirmModalOpen(true);
+  }, []);
+
+  const handleConfirmDeleteAll = useCallback(() => {
+    deleteAllNotes();
+    setIsConfirmModalOpen(false);
   }, [deleteAllNotes]);
 
   const handleExportPdf = useCallback(async () => {
@@ -207,6 +212,15 @@ export default function Board() {
         onClose={() => setToast(null)} />
 
       }
+
+      {/* Modals */}
+      <ConfirmModal 
+        isOpen={isConfirmModalOpen}
+        onConfirm={handleConfirmDeleteAll}
+        onCancel={() => setIsConfirmModalOpen(false)}
+        title="מחיקת כל הפתקים"
+        message="האם אתה בטוח שברצונך למחוק את כל הפתקים בלוח זה? פעולה זו הינה לצמיתות ולא ניתנת לביטול."
+      />
     </div>);
 
 }
