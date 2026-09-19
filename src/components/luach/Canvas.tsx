@@ -37,7 +37,7 @@ export function Canvas({ children, onScaleChange, transformRef }: CanvasProps) {
         minScale={MIN_ZOOM}
         maxScale={MAX_ZOOM}
         limitToBounds={false}
-        wheel={{ step: 0.05 }}
+        wheel={{ step: 0.02 }}
         panning={{ velocityDisabled: true, excluded: ['no-drag'] }}
         onTransform={handleTransform}
         initialPositionX={0}
@@ -61,12 +61,13 @@ export function Canvas({ children, onScaleChange, transformRef }: CanvasProps) {
 
             {/* Center marker - red + */}
             <div data-ev-id="ev_95b42248f7"
-          className="absolute flex items-center justify-center text-red-500 font-bold text-4xl select-none pointer-events-none"
+          className="absolute flex items-center justify-center text-red-500 font-bold select-none pointer-events-none"
           style={{
-            left: CANVAS_SIZE / 2 - 20,
-            top: CANVAS_SIZE / 2 - 20,
-            width: 40,
-            height: 40
+            left: 100,
+            top: 100,
+            width: 60,
+            height: 60,
+            fontSize: '48px'
           }}>
 
               +

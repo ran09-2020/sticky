@@ -21,31 +21,9 @@ export function Toolbar({
 }: ToolbarProps) {
   const toolbarRef = useRef<HTMLDivElement>(null);
 
-  const getViewportCenter = (): {x: number; y: number;} => {
-    const wrapper = transformRef.current;
-    
-    // Get viewport dimensions
-    const viewportWidth = window.innerWidth;
-    const viewportHeight = window.innerHeight;
-    
-    // Default: center of visible screen area
-    const defaultPos = { x: viewportWidth / 2 - 60, y: viewportHeight / 2 - 100 };
-    
-    if (!wrapper || !wrapper.state) {
-      return defaultPos;
-    }
-
-    const { positionX, positionY, scale: currentScale } = wrapper.state;
-    
-    // Screen center, slightly above middle (above toolbar)
-    const screenX = viewportWidth / 2;
-    const screenY = viewportHeight / 2 - 50;
-
-    // Convert screen coordinates to canvas coordinates
-    const canvasX = (screenX - positionX) / currentScale - 60;
-    const canvasY = (screenY - positionY) / currentScale - 60;
-
-    return { x: Math.max(20, canvasX), y: Math.max(20, canvasY) };
+  const getViewportCenter = (): {x: number;y: number;} => {
+    // Simple fixed position that's always visible
+    return { x: 150, y: 150 };
   };
 
   const handleAddNote = (type: NoteType) => {
@@ -86,23 +64,23 @@ export function Toolbar({
       </div>
 
       {/* Zoom controls */}
-      <div data-ev-id="ev_dad42cadbd" className="flex items-center gap-1 border-l border-gray-200 pl-2">
-        <button data-ev-id="ev_5e7b81aa7b"
-        onClick={handleZoomOut}
-        className="p-1.5 hover:bg-gray-100 rounded-lg text-gray-600"
-        title="התרחק">
-
-          <ZoomOut size={18} />
-        </button>
-        <span data-ev-id="ev_a5aaaab5a3" className="text-xs text-gray-500 min-w-[40px] text-center">
-          {Math.round(scale * 100)}%
-        </span>
-        <button data-ev-id="ev_af2790c538"
+      <div data-ev-id="ev_5664721a1a" className="flex items-center gap-1 border-l border-gray-200 pl-2">
+        <button data-ev-id="ev_76086f7f26"
         onClick={handleZoomIn}
         className="p-1.5 hover:bg-gray-100 rounded-lg text-gray-600"
-        title="התקרב">
+        title="הגדל">
 
           <ZoomIn size={18} />
+        </button>
+        <span data-ev-id="ev_96963cc0e3" className="text-xs text-gray-500 min-w-[40px] text-center">
+          {Math.round(scale * 100)}%
+        </span>
+        <button data-ev-id="ev_5ec32f3e7a"
+        onClick={handleZoomOut}
+        className="p-1.5 hover:bg-gray-100 rounded-lg text-gray-600"
+        title="הקטן">
+
+          <ZoomOut size={18} />
         </button>
       </div>
 
