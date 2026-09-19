@@ -45,7 +45,24 @@ export function useBoard(slug: string) {
         .single();
 
       if (createError) {
-        setError('שגיאה ביצירת הלוח');
+        // Handle race condition: if it was created right after our initial fetch
+        if (createError.code === '23505' || createError.message.includes('duplicate key')) {
+          const { data: retryExisting } = await supabase
+            .from('boards')
+            .select('*')
+            .eq('slug', slug)
+            .maybeSingle();
+            
+          if (retryExisting) {
+            setBoard(retryExisting);
+            addBoard({ slug: retryExisting.slug, title: retryExisting.title });
+            setLoading(false);
+            return;
+          }
+        }
+        
+        console.error('Board creation error:', createError);
+        setError(`שגיאה ביצירת הלוח: ${createError.message}`);
         setLoading(false);
         return;
       }
