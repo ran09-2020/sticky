@@ -70,15 +70,15 @@ export const Canvas = forwardRef<CanvasHandle, CanvasProps>(({ children }, ref) 
   return (
     <div data-ev-id="ev_c80e5515a1"
     ref={scrollContainerRef}
-    className="absolute inset-0 overflow-auto">
+    className="absolute inset-0 overflow-auto bg-slate-300">
 
       <div data-ev-id="ev_ceddbbc51e"
-      className="relative"
+      className="relative border-2 border-slate-400 shadow-lg"
       style={{
         width: canvasSize.width,
         height: canvasSize.height,
-        minWidth: '100%',
-        minHeight: '100%',
+        minWidth: '50%',
+        minHeight: '50%',
         backgroundImage: `
             linear-gradient(to right, #d1d5db 1px, transparent 1px),
             linear-gradient(to bottom, #d1d5db 1px, transparent 1px)
@@ -86,6 +86,7 @@ export const Canvas = forwardRef<CanvasHandle, CanvasProps>(({ children }, ref) 
         backgroundSize: '40px 40px',
         backgroundColor: '#f3f4f6'
       }}>
+
 
         {/* Center marker */}
         <div data-ev-id="ev_371056db9a"
