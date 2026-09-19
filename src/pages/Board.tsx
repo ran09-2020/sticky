@@ -10,7 +10,6 @@ import { NoteCard } from '@/components/luach/NoteCard';
 import { Toolbar } from '@/components/luach/Toolbar';
 import { Sidebar } from '@/components/luach/Sidebar';
 import { Header } from '@/components/luach/Header';
-import { BoardTabs } from '@/components/luach/BoardTabs';
 import { Toast } from '@/components/luach/Toast';
 import { ConfirmModal } from '@/components/luach/ConfirmModal';
 import { exportToPdf } from '@/lib/export-pdf';
@@ -154,10 +153,7 @@ export default function Board() {
         author={author}
         isProtected={board.is_protected}
         onTitleChange={updateTitle}
-        onAuthorChange={setAuthor} />
-
-      {/* Tabs */}
-      <BoardTabs
+        onAuthorChange={setAuthor}
         topics={(board.topics as unknown as BoardTopic[]) || [{ id: 'default', name: 'ראשי' }]}
         activeTopicId={activeTopicId}
         onSelectTopic={setActiveTopicId}
@@ -174,7 +170,6 @@ export default function Board() {
             setActiveTopicId(otherTopic.id);
           }
         }}
-        isProtected={board.is_protected}
       />
 
 

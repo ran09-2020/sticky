@@ -52,8 +52,7 @@ export function BoardTabs({
   };
 
   return (
-    <div className="absolute top-16 left-0 right-0 z-40 flex justify-center pointer-events-none" dir="rtl">
-      <div className="flex items-center gap-1 bg-white/80 backdrop-blur shadow-sm rounded-b-lg px-2 pb-1 pt-2 pointer-events-auto overflow-x-auto max-w-full border border-t-0 border-gray-200">
+    <div className="flex items-center gap-1 overflow-x-auto max-w-[400px] shrink-0" dir="rtl">
         {topics.map(topic => (
           <div key={topic.id} className="relative group flex items-center">
             {editingId === topic.id ? (
@@ -77,10 +76,10 @@ export function BoardTabs({
                     setEditName(topic.name);
                   }
                 }}
-                className={`px-6 py-1.5 text-sm font-medium rounded-t-md transition-colors relative ${
+                className={`px-3 py-1 text-sm font-medium rounded-md transition-colors relative ${
                   activeTopicId === topic.id
-                    ? 'bg-white text-blue-600 border-b-2 border-blue-500'
-                    : 'text-gray-600 hover:bg-white/50 hover:text-gray-900 border-b-2 border-transparent'
+                    ? 'bg-blue-100 text-blue-700'
+                    : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
                 }`}
                 title={!isProtected ? "לחיצה כפולה לשינוי שם" : ""}
               >
@@ -94,17 +93,17 @@ export function BoardTabs({
                   e.stopPropagation();
                   onRemoveTopic(topic.id);
                 }}
-                className="absolute left-1 opacity-0 group-hover:opacity-100 p-0.5 text-red-400 hover:text-red-600 hover:bg-red-50 rounded"
+                className="absolute -top-1 -right-1 opacity-0 group-hover:opacity-100 p-0.5 text-white bg-red-500 hover:bg-red-600 rounded-full shadow-sm"
                 title="מחק נושא"
               >
-                <X size={12} />
+                <X size={10} />
               </button>
             )}
           </div>
         ))}
 
         {!isProtected && (
-          <div className="flex items-center mr-2 border-r border-gray-300 pr-2">
+          <div className="flex items-center mr-1 pl-1">
             {isAdding ? (
               <form onSubmit={handleAddSubmit} className="flex items-center">
                 <input
@@ -129,7 +128,6 @@ export function BoardTabs({
             )}
           </div>
         )}
-      </div>
     </div>
   );
 }

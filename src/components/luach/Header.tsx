@@ -1,4 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
+import { BoardTabs } from './BoardTabs';
+import type { BoardTopic } from '@/types/luach';
 
 interface HeaderProps {
   slug: string;
@@ -7,6 +9,12 @@ interface HeaderProps {
   isProtected: boolean;
   onTitleChange: (title: string) => void;
   onAuthorChange: (author: string) => void;
+  topics?: BoardTopic[];
+  activeTopicId?: string;
+  onSelectTopic?: (id: string) => void;
+  onAddTopic?: (name: string) => void;
+  onRenameTopic?: (id: string, name: string) => void;
+  onRemoveTopic?: (id: string) => void;
 }
 
 export function Header({
@@ -15,7 +23,13 @@ export function Header({
   author,
   isProtected,
   onTitleChange,
-  onAuthorChange
+  onAuthorChange,
+  topics,
+  activeTopicId,
+  onSelectTopic,
+  onAddTopic,
+  onRenameTopic,
+  onRemoveTopic
 }: HeaderProps) {
   const [editingTitle, setEditingTitle] = useState(false);
   const [localTitle, setLocalTitle] = useState(title);
@@ -80,6 +94,22 @@ export function Header({
           </h1>
         }
       </div>
+
+      {/* Tabs */}
+      {topics && activeTopicId && onSelectTopic && onAddTopic && onRenameTopic && onRemoveTopic && (
+        <>
+          <div className="w-px h-4 bg-gray-300 mx-2" />
+          <BoardTabs 
+            topics={topics}
+            activeTopicId={activeTopicId}
+            onSelectTopic={onSelectTopic}
+            onAddTopic={onAddTopic}
+            onRenameTopic={onRenameTopic}
+            onRemoveTopic={onRemoveTopic}
+            isProtected={isProtected}
+          />
+        </>
+      )}
 
       {/* Divider */}
       <div data-ev-id="ev_5344e9d381" className="w-px h-4 bg-gray-300" />
