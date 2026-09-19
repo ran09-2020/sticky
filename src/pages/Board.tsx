@@ -26,6 +26,7 @@ export default function Board() {
   const { author, setAuthor } = useAuthor();
 
   const [toast, setToast] = useState<{message: string;type: 'success' | 'error';} | null>(null);
+  const [selectedNoteType, setSelectedNoteType] = useState<NoteType>('sticky');
   const notesContainerRef = useRef<HTMLDivElement>(null);
 
 
@@ -66,13 +67,13 @@ export default function Board() {
   // Handle click on canvas - create a note at click position
   const handleCanvasClick = useCallback((x: number, y: number) => {
     // Center the note on the click point
-    const noteWidth = 120;
+    const noteWidth = selectedNoteType === 'sticky' ? 120 : 180;
     const noteHeight = 120;
     const posX = Math.max(0, x - noteWidth / 2);
     const posY = Math.max(0, y - noteHeight / 2);
 
-    addNote('sticky', { x: posX, y: posY }, author);
-  }, [addNote, author]);
+    addNote(selectedNoteType, { x: posX, y: posY }, author);
+  }, [addNote, author, selectedNoteType]);
 
   // Database not enabled
   if (!supabase) {
@@ -166,6 +167,8 @@ export default function Board() {
 
       {/* Toolbar */}
       <Toolbar
+        selectedType={selectedNoteType}
+        onTypeSelect={setSelectedNoteType}
         onExportPdf={handleExportPdf}
         onCopyLink={handleCopyLink} />
 
