@@ -93,7 +93,7 @@ export function Sidebar({
             value={newBoardName}
             onChange={(e) => setNewBoardName(e.target.value)}
             onKeyDown={handleKeyDown}
-            placeholder="שם הלוח (אנגלית)"
+            placeholder="שם הלוח"
             className="px-3 py-2 border rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
             autoFocus />
 

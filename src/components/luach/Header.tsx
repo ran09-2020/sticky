@@ -47,7 +47,7 @@ export function Header({
       {/* Board Name */}
       <div className="flex items-center gap-2">
         <span className="text-sm font-bold text-gray-800">
-          לוח: {slug.toUpperCase()}
+          לוח: {decodeURIComponent(slug).toUpperCase()}
         </span>
       </div>
 
