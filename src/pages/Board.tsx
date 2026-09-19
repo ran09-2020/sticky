@@ -85,11 +85,17 @@ export default function Board() {
     const positionY = state?.positionY ?? 0;
     const currentScale = state?.scale ?? 1;
 
-    // Convert drop position to canvas coordinates
-    const canvasX = (e.clientX - positionX) / currentScale - 60;
-    const canvasY = (e.clientY - positionY) / currentScale - 60;
+    // Note dimensions (to center the note at drop point)
+    const noteWidth = noteType === 'sticky' ? 120 : 180;
+    const noteHeight = 120;
 
-    addNote(noteType, { x: canvasX, y: canvasY }, author);
+    // Convert drop position to canvas coordinates
+    // e.clientX/Y are screen coordinates
+    // We need to reverse the transform: canvas = (screen - position) / scale
+    const canvasX = (e.clientX - positionX) / currentScale - noteWidth / 2;
+    const canvasY = (e.clientY - positionY) / currentScale - noteHeight / 2;
+
+    addNote(noteType, { x: Math.max(0, canvasX), y: Math.max(0, canvasY) }, author);
   }, [addNote, author]);
 
   const handleDragOver = useCallback((e: DragEvent<HTMLDivElement>) => {
