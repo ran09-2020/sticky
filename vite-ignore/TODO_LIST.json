@@ -1,0 +1,53 @@
+{
+  "summary": "בניית \"לוח\" - פלטפורמת סיעור מוחות שיתופית",
+  "todos": [
+    {
+      "id": 1,
+      "description": "תשתית: Cloud Backend, סכמת מסד נתונים, ספריות",
+      "files": [
+        "migrations",
+        "package.json"
+      ],
+      "status": "complete"
+    },
+    {
+      "id": 2,
+      "description": "עיצוב ותשתית קוד: theme, types, hooks, ניתוב",
+      "files": [
+        "src/theme.css",
+        "src/types",
+        "src/hooks"
+      ],
+      "status": "complete"
+    },
+    {
+      "id": 3,
+      "description": "לוח אינסופי + פתקים (גרירה, שינוי גודל, עריכה)",
+      "files": [
+        "src/components/Note.tsx",
+        "src/components/Canvas.tsx"
+      ],
+      "status": "complete"
+    },
+    {
+      "id": 4,
+      "description": "התאמה אישית, ריבוי לוחות, תפריט צדדי",
+      "files": [
+        "src/components/",
+        "src/pages/"
+      ],
+      "status": "complete"
+    },
+    {
+      "id": 5,
+      "description": "סנכרון בזמן אמת, ייצוא PDF, שיתוף",
+      "files": [
+        "src/hooks/",
+        "src/lib/"
+      ],
+      "status": "complete"
+    }
+  ],
+  "createdAt": "2026-09-18T16:05:48.910Z",
+  "updatedAt": "2026-09-18T16:12:51.147Z"
+}
