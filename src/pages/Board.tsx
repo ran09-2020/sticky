@@ -32,7 +32,7 @@ export default function Board() {
   const transformRef = useRef<ReactZoomPanPinchRef>(null);
   const canvasContentRef = useRef<HTMLDivElement>(null);
 
-  
+
 
   const handleExportPdf = useCallback(async () => {
     const contentEl = canvasContentRef.current;
@@ -167,6 +167,9 @@ export default function Board() {
       {/* Canvas */}
       <Canvas onScaleChange={setScale} transformRef={transformRef} showCenterMarker={showCenterMarker}>
         <div data-ev-id="ev_134a15b931" ref={canvasContentRef} className="absolute inset-0">
+          {/* Center marker */}
+          <div data-ev-id="ev_fd6ccc61b5" className="absolute text-red-500 text-4xl font-bold pointer-events-none select-none" style={{ left: 1000, top: 1000, transform: 'translate(-50%, -50%)' }}>+</div>
+          
           {notes.map((note) =>
           <NoteCard
             key={note.id}
@@ -191,8 +194,8 @@ export default function Board() {
         transformRef={transformRef}
         onExportPdf={handleExportPdf}
         onCopyLink={handleCopyLink}
-        onCenterView={handleCenterView}
-      />
+        onCenterView={handleCenterView} />
+
 
 
 
