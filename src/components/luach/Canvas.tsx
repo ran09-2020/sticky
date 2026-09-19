@@ -59,24 +59,17 @@ export function Canvas({ children, onScaleChange, transformRef }: CanvasProps) {
             {/* Transparent canvas area */}
             <div data-ev-id="ev_83b6183323" className="absolute inset-0" />
 
-            {/* Center marker - red + */}
-            <div data-ev-id="ev_95b42248f7"
-          className="absolute flex items-center justify-center text-red-500 font-bold select-none pointer-events-none"
-          style={{
-            left: 100,
-            top: 100,
-            width: 60,
-            height: 60,
-            fontSize: '48px'
-          }}>
-
-              +
-            </div>
-
             {children}
           </TransformComponent>
         }
       </TransformWrapper>
+
+      {/* Center marker - red + (fixed at screen center) */}
+      <div data-ev-id="ev_61ac7db04a"
+      className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-red-500 font-bold text-5xl select-none pointer-events-none z-10">
+
+        +
+      </div>
     </div>);
 
 }
