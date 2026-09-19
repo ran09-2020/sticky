@@ -1,26 +1,157 @@
-import type { ReactNode } from 'react';
+import { useState, useRef, useEffect, type ReactNode, type MouseEvent } from 'react';
 
 interface CanvasProps {
   children: ReactNode;
 }
 
 export function Canvas({ children }: CanvasProps) {
-  return (
-    <div data-ev-id="ev_a3ae3630ca"
-    className="absolute inset-0 overflow-hidden"
-    style={{
-      backgroundImage: `
-          linear-gradient(to right, #d1d5db 1px, transparent 1px),
-          linear-gradient(to bottom, #d1d5db 1px, transparent 1px)
-        `,
-      backgroundSize: '40px 40px',
-      backgroundColor: '#f3f4f6'
-    }}>
+  const [canvasSize, setCanvasSize] = useState({ width: window.innerWidth, height: window.innerHeight });
+  const [isResizing, setIsResizing] = useState(false);
+  const resizeStart = useRef({ x: 0, y: 0, width: 0, height: 0 });
 
-      {/* Center marker */}
-      <div data-ev-id="ev_dd059761fc" className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-red-500 text-6xl font-bold pointer-events-none select-none z-10">+</div>
-      
-      {children}
+  const handleResizeStart = (e: MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsResizing(true);
+    resizeStart.current = {
+      x: e.clientX,
+      y: e.clientY,
+      width: canvasSize.width,
+      height: canvasSize.height
+    };
+  };
+
+  useEffect(() => {
+    if (!isResizing) return;
+
+    const handleResizeMove = (e: globalThis.MouseEvent) => {
+      const dx = e.clientX - resizeStart.current.x;
+      const dy = e.clientY - resizeStart.current.y;
+      const newWidth = Math.max(window.innerWidth, resizeStart.current.width + dx);
+      const newHeight = Math.max(window.innerHeight, resizeStart.current.height + dy);
+      setCanvasSize({ width: newWidth, height: newHeight });
+    };
+
+    const handleResizeEnd = () => {
+      setIsResizing(false);
+    };
+
+    window.addEventListener('mousemove', handleResizeMove);
+    window.addEventListener('mouseup', handleResizeEnd);
+    return () => {
+      window.removeEventListener('mousemove', handleResizeMove);
+      window.removeEventListener('mouseup', handleResizeEnd);
+    };
+  }, [isResizing]);
+
+  return (
+    <div data-ev-id="ev_ebc66d200a" className="absolute inset-0 overflow-auto">
+      <div data-ev-id="ev_2af96531a8"
+      className="relative"
+      style={{
+        width: canvasSize.width,
+        height: canvasSize.height,
+        minWidth: '100%',
+        minHeight: '100%',
+        backgroundImage: `
+            linear-gradient(to right, #d1d5db 1px, transparent 1px),
+            linear-gradient(to bottom, #d1d5db 1px, transparent 1px)
+          `,
+        backgroundSize: '40px 40px',
+        backgroundColor: '#f3f4f6'
+      }}>
+
+        {/* Center marker */}
+        <div data-ev-id="ev_b1f4908e3f"
+        className="absolute text-red-500 text-6xl font-bold pointer-events-none select-none z-10"
+        style={{
+          left: canvasSize.width / 2,
+          top: canvasSize.height / 2,
+          transform: 'translate(-50%, -50%)'
+        }}>
+
+          +
+        </div>
+        
+        {children}
+
+        {/* Resize handle - bottom right corner */}
+        <div data-ev-id="ev_dd06ee98e0"
+        className="absolute bottom-0 right-0 w-6 h-6 cursor-se-resize z-50 flex items-center justify-center"
+        onMouseDown={handleResizeStart}
+        title="גרור להגדלת הלוח">
+
+          <svg data-ev-id="ev_4cc0345b77" viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4 text-gray-400 hover:text-gray-600">
+            <path data-ev-id="ev_5222867517" d="M22 22H20V20H22V22ZM22 18H20V16H22V18ZM18 22H16V20H18V22ZM22 14H20V12H22V14ZM18 18H16V16H18V18ZM14 22H12V20H14V22ZM22 10H20V8H22V10ZM18 14H16V12H18V14ZM14 18H12V16H14V18ZM10 22H8V20H10V22Z" />
+          </svg>
+        </div>
+
+        {/* Right edge resize handle */}
+        <div data-ev-id="ev_c9a03419fe"
+        className="absolute top-0 right-0 w-2 h-full cursor-e-resize z-40 hover:bg-blue-400/30"
+        onMouseDown={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          setIsResizing(true);
+          resizeStart.current = {
+            x: e.clientX,
+            y: e.clientY,
+            width: canvasSize.width,
+            height: canvasSize.height
+          };
+
+          const handleMove = (ev: globalThis.MouseEvent) => {
+            const dx = ev.clientX - resizeStart.current.x;
+            setCanvasSize((prev) => ({
+              ...prev,
+              width: Math.max(window.innerWidth, resizeStart.current.width + dx)
+            }));
+          };
+
+          const handleUp = () => {
+            setIsResizing(false);
+            window.removeEventListener('mousemove', handleMove);
+            window.removeEventListener('mouseup', handleUp);
+          };
+
+          window.addEventListener('mousemove', handleMove);
+          window.addEventListener('mouseup', handleUp);
+        }} />
+
+
+        {/* Bottom edge resize handle */}
+        <div data-ev-id="ev_7406ddf8d8"
+        className="absolute bottom-0 left-0 w-full h-2 cursor-s-resize z-40 hover:bg-blue-400/30"
+        onMouseDown={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          setIsResizing(true);
+          resizeStart.current = {
+            x: e.clientX,
+            y: e.clientY,
+            width: canvasSize.width,
+            height: canvasSize.height
+          };
+
+          const handleMove = (ev: globalThis.MouseEvent) => {
+            const dy = ev.clientY - resizeStart.current.y;
+            setCanvasSize((prev) => ({
+              ...prev,
+              height: Math.max(window.innerHeight, resizeStart.current.height + dy)
+            }));
+          };
+
+          const handleUp = () => {
+            setIsResizing(false);
+            window.removeEventListener('mousemove', handleMove);
+            window.removeEventListener('mouseup', handleUp);
+          };
+
+          window.addEventListener('mousemove', handleMove);
+          window.addEventListener('mouseup', handleUp);
+        }} />
+
+      </div>
     </div>);
 
 }

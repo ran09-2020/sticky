@@ -134,7 +134,7 @@ export default function Board() {
 
       {/* Canvas */}
       <Canvas>
-        <div data-ev-id="ev_d0f766c9fc"
+        <div data-ev-id="ev_1bf3cdf1a1"
         ref={notesContainerRef}
         className="absolute inset-0 cursor-crosshair"
         onClick={(e) => {
@@ -146,6 +146,7 @@ export default function Board() {
             handleCanvasClick(x, y);
           }
         }}>
+
 
           {notes.map((note) =>
           <NoteCard
