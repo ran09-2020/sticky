@@ -78,23 +78,23 @@ export default function Board() {
     const noteType = e.dataTransfer.getData('noteType') as NoteType;
     if (!noteType) return;
 
-    const wrapper = transformRef.current;
-    if (!wrapper) return;
-
-    // Get the content element (the actual canvas)
-    const contentEl = wrapper.instance.contentComponent;
+    // Get the canvas content element's position
+    const contentEl = canvasContentRef.current;
     if (!contentEl) return;
 
     const rect = contentEl.getBoundingClientRect();
-    const scale = wrapper.state?.scale ?? 1;
+    const currentScale = transformRef.current?.state?.scale ?? 1;
 
     // Note dimensions (to center the note at drop point)
     const noteWidth = noteType === 'sticky' ? 120 : 180;
     const noteHeight = 120;
 
-    // Calculate position relative to the canvas content
-    const canvasX = (e.clientX - rect.left) / scale - noteWidth / 2;
-    const canvasY = (e.clientY - rect.top) / scale - noteHeight / 2;
+    // Convert screen coordinates to canvas coordinates
+    // rect already accounts for the transform, so we just need to:
+    // 1. Get position relative to the transformed canvas
+    // 2. Divide by scale to get actual canvas position
+    const canvasX = (e.clientX - rect.left) / currentScale - noteWidth / 2;
+    const canvasY = (e.clientY - rect.top) / currentScale - noteHeight / 2;
 
     addNote(noteType, { x: Math.max(0, canvasX), y: Math.max(0, canvasY) }, author);
   }, [addNote, author]);
@@ -166,7 +166,7 @@ export default function Board() {
 
       {/* Canvas */}
       <Canvas onScaleChange={setScale} transformRef={transformRef} showCenterMarker={showCenterMarker}>
-        <div data-ev-id="ev_134a15b931" ref={canvasContentRef}>
+        <div data-ev-id="ev_134a15b931" ref={canvasContentRef} className="absolute inset-0">
           {notes.map((note) =>
           <NoteCard
             key={note.id}
