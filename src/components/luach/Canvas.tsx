@@ -29,13 +29,15 @@ export const Canvas = forwardRef<CanvasHandle, CanvasProps>(({ children, onSizeC
       const container = scrollContainerRef.current;
       if (!container) return;
 
-      // Scroll to center of canvas
-      const scrollX = (canvasSize.width - container.clientWidth) / 2;
-      const scrollY = (canvasSize.height - container.clientHeight) / 2;
+      // Calculate scroll position to center the canvas
+      // When canvas is larger than viewport, scroll to center
+      // When canvas is smaller, it's already centered via CSS flex
+      const scrollX = Math.max(0, (container.scrollWidth - container.clientWidth) / 2);
+      const scrollY = Math.max(0, (container.scrollHeight - container.clientHeight) / 2);
 
       container.scrollTo({
-        left: Math.max(0, scrollX),
-        top: Math.max(0, scrollY),
+        left: scrollX,
+        top: scrollY,
         behavior: 'smooth'
       });
     },
@@ -43,17 +45,17 @@ export const Canvas = forwardRef<CanvasHandle, CanvasProps>(({ children, onSizeC
       setCanvasSize({ width: window.innerWidth, height: window.innerHeight });
       scrollContainerRef.current?.scrollTo({ left: 0, top: 0, behavior: 'smooth' });
     }
-  }), [canvasSize]);
+  }), []);
 
-  
+
 
   return (
-    <div data-ev-id="ev_c80e5515a1"
+    <div data-ev-id="ev_1b1c73a82f"
     ref={scrollContainerRef}
-    className="absolute inset-0 overflow-auto bg-slate-300">
+    className="absolute inset-0 overflow-auto bg-slate-300 flex items-center justify-center">
 
-      <div data-ev-id="ev_ceddbbc51e"
-      className="relative border-2 border-slate-400 shadow-lg"
+      <div data-ev-id="ev_be9ea112d2"
+      className="relative border-2 border-slate-400 shadow-lg flex-shrink-0"
       style={{
         width: canvasSize.width,
         height: canvasSize.height,
