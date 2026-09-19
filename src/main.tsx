@@ -12,7 +12,7 @@ import './index.css';
 createRoot(document.getElementById('root')!).render(
 	<StrictMode>
 		<AppProviders>
-			<BrowserRouter>
+			<BrowserRouter basename="/sticky">
 				<App />
 			</BrowserRouter>
 		</AppProviders>
