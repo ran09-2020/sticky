@@ -130,6 +130,8 @@ export function NoteCard({
       ref={nodeRef}
       className="absolute select-none"
       style={{
+        left: 0,
+        top: 0,
         width: note.width,
         height: note.height,
         zIndex: note.z_index
