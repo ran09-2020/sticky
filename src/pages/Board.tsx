@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback, type DragEvent } from 'react';
+import { useState, useCallback, useRef } from 'react';
 import { useParams, useNavigate } from 'react-router';
 import { supabase } from '@/integrations/supabase/client';
 import { useBoard } from '@/hooks/use-board';
@@ -26,12 +26,12 @@ export default function Board() {
   const { author, setAuthor } = useAuthor();
 
   const [toast, setToast] = useState<{message: string;type: 'success' | 'error';} | null>(null);
-  const canvasContentRef = useRef<HTMLDivElement>(null);
+  const notesContainerRef = useRef<HTMLDivElement>(null);
 
 
 
   const handleExportPdf = useCallback(async () => {
-    const contentEl = canvasContentRef.current;
+    const contentEl = notesContainerRef.current;
     if (!contentEl) return;
 
     const success = await exportToPdf(contentEl, `${slug}-${Date.now()}.pdf`);
@@ -63,33 +63,17 @@ export default function Board() {
     addBoard({ slug: newSlug, title: '' });
   }, [addBoard]);
 
-  // Handle drop from toolbar
-  const handleDrop = useCallback((e: DragEvent<HTMLDivElement>) => {
-    e.preventDefault();
-    const noteType = e.dataTransfer.getData('noteType') as NoteType;
-    if (!noteType) return;
-
-    // Get the canvas content element's position
-    const contentEl = canvasContentRef.current;
-    if (!contentEl) return;
-
-    const rect = contentEl.getBoundingClientRect();
-
-    // Note dimensions (to center the note at drop point)
-    const noteWidth = noteType === 'sticky' ? 120 : 180;
+  // Handle drop from canvas
+  const handleNoteDrop = useCallback((x: number, y: number, noteType: string) => {
+    const type = noteType as NoteType;
+    // Center the note on the drop point
+    const noteWidth = type === 'sticky' ? 120 : 180;
     const noteHeight = 120;
-
-    // Calculate position relative to the canvas (no zoom/pan anymore)
-    const canvasX = e.clientX - rect.left - noteWidth / 2;
-    const canvasY = e.clientY - rect.top - noteHeight / 2;
-
-    addNote(noteType, { x: Math.max(0, canvasX), y: Math.max(0, canvasY) }, author);
+    const posX = Math.max(0, x - noteWidth / 2);
+    const posY = Math.max(0, y - noteHeight / 2);
+    
+    addNote(type, { x: posX, y: posY }, author);
   }, [addNote, author]);
-
-  const handleDragOver = useCallback((e: DragEvent<HTMLDivElement>) => {
-    e.preventDefault();
-    e.dataTransfer.dropEffect = 'copy';
-  }, []);
 
   // Database not enabled
   if (!supabase) {
@@ -127,10 +111,7 @@ export default function Board() {
   if (!board) return null;
 
   return (
-    <div data-ev-id="ev_2420b85897"
-    className="h-screen w-screen overflow-hidden bg-gray-100"
-    onDrop={handleDrop}
-    onDragOver={handleDragOver}>
+    <div data-ev-id="ev_2420b85897" className="h-screen w-screen overflow-hidden bg-gray-100">
 
       {/* Header */}
       <Header
@@ -152,11 +133,8 @@ export default function Board() {
 
 
       {/* Canvas */}
-      <Canvas>
-        <div data-ev-id="ev_134a15b931" ref={canvasContentRef} className="absolute inset-0">
-          {/* Center marker - red + at center of screen */}
-          <div data-ev-id="ev_11816c4082" className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-red-500 text-6xl font-bold pointer-events-none select-none">+</div>
-          
+      <Canvas onNoteDrop={handleNoteDrop}>
+        <div data-ev-id="ev_134a15b931" ref={notesContainerRef} className="absolute inset-0">
           {notes.map((note) =>
           <NoteCard
             key={note.id}
