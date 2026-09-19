@@ -2,6 +2,7 @@ import { useState, useRef, useEffect, useImperativeHandle, forwardRef, type Reac
 
 export interface CanvasHandle {
   centerView: () => void;
+  resetSize: () => void;
 }
 
 interface CanvasProps {
@@ -14,7 +15,7 @@ export const Canvas = forwardRef<CanvasHandle, CanvasProps>(({ children }, ref) 
   const resizeStart = useRef({ x: 0, y: 0, width: 0, height: 0 });
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
-  // Expose centerView function to parent
+  // Expose centerView and resetSize functions to parent
   useImperativeHandle(ref, () => ({
     centerView: () => {
       const container = scrollContainerRef.current;
@@ -29,6 +30,10 @@ export const Canvas = forwardRef<CanvasHandle, CanvasProps>(({ children }, ref) 
         top: Math.max(0, scrollY),
         behavior: 'smooth'
       });
+    },
+    resetSize: () => {
+      setCanvasSize({ width: window.innerWidth, height: window.innerHeight });
+      scrollContainerRef.current?.scrollTo({ left: 0, top: 0, behavior: 'smooth' });
     }
   }), [canvasSize]);
 

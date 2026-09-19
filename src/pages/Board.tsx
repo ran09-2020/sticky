@@ -34,6 +34,10 @@ export default function Board() {
     canvasRef.current?.centerView();
   }, []);
 
+  const handleResetSize = useCallback(() => {
+    canvasRef.current?.resetSize();
+  }, []);
+
 
 
   const handleExportPdf = useCallback(async () => {
@@ -177,7 +181,8 @@ export default function Board() {
         onTypeSelect={setSelectedNoteType}
         onExportPdf={handleExportPdf}
         onCopyLink={handleCopyLink}
-        onCenterView={handleCenterView} />
+        onCenterView={handleCenterView}
+        onResetSize={handleResetSize} />
 
 
 

@@ -1,4 +1,4 @@
-import { Download, Link2, StickyNote, FileText, Crosshair } from 'lucide-react';
+import { Download, Link2, StickyNote, FileText, Crosshair, Maximize } from 'lucide-react';
 import type { NoteType } from '@/types/luach';
 
 interface ToolbarProps {
@@ -7,6 +7,7 @@ interface ToolbarProps {
   onExportPdf: () => void;
   onCopyLink: () => void;
   onCenterView: () => void;
+  onResetSize: () => void;
 }
 
 export function Toolbar({
@@ -14,7 +15,8 @@ export function Toolbar({
   onTypeSelect,
   onExportPdf,
   onCopyLink,
-  onCenterView
+  onCenterView,
+  onResetSize
 }: ToolbarProps) {
   return (
     <div data-ev-id="ev_2c38a4b008"
@@ -54,14 +56,23 @@ export function Toolbar({
         לחץ על הלוח להוספה
       </div>
 
-      {/* Center button */}
-      <button data-ev-id="ev_175790d17b"
-      onClick={onCenterView}
-      className="p-1.5 hover:bg-gray-100 rounded-lg text-gray-600"
-      title="מרכז את התצוגה">
+      {/* View controls */}
+      <div data-ev-id="ev_659fcc32ed" className="flex items-center gap-1">
+        <button data-ev-id="ev_6208f14ed0"
+        onClick={onCenterView}
+        className="p-1.5 hover:bg-gray-100 rounded-lg text-gray-600"
+        title="מרכז את התצוגה">
 
-        <Crosshair size={18} />
-      </button>
+          <Crosshair size={18} />
+        </button>
+        <button data-ev-id="ev_76086f7f26"
+        onClick={onResetSize}
+        className="p-1.5 hover:bg-gray-100 rounded-lg text-gray-600"
+        title="החזר לגודל המסך">
+
+          <Maximize size={18} />
+        </button>
+      </div>
 
       {/* Export & Share */}
       <div data-ev-id="ev_67f0048f7c" className="flex items-center gap-1 border-r border-gray-200 pr-3">
