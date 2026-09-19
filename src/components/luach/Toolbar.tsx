@@ -1,4 +1,4 @@
-import { Download, Link2, StickyNote, FileText, Crosshair, Maximize, Trash2 } from 'lucide-react';
+import { Download, Link2, StickyNote, FileText, Maximize, Trash2 } from 'lucide-react';
 import type { NoteType } from '@/types/luach';
 
 interface ToolbarProps {
@@ -6,7 +6,6 @@ interface ToolbarProps {
   onTypeSelect: (type: NoteType) => void;
   onExportPdf: () => void;
   onCopyLink: () => void;
-  onCenterView: () => void;
   onResetSize: () => void;
   onDeleteAll: () => void;
   boardSizePercent: number;
@@ -17,7 +16,6 @@ export function Toolbar({
   onTypeSelect,
   onExportPdf,
   onCopyLink,
-  onCenterView,
   onResetSize,
   onDeleteAll,
   boardSizePercent
@@ -62,13 +60,6 @@ export function Toolbar({
 
       {/* View controls */}
       <div data-ev-id="ev_1f0835b9c6" className="flex items-center gap-1 border-l border-gray-200 pl-3">
-        <button data-ev-id="ev_97ebd6ffaf"
-        onClick={onCenterView}
-        className="p-1.5 hover:bg-gray-100 rounded-lg text-gray-600"
-        title="מרכז את התצוגה">
-
-          <Crosshair size={18} />
-        </button>
         <button data-ev-id="ev_0793f0620a"
         onClick={onResetSize}
         className="p-1.5 hover:bg-gray-100 rounded-lg text-gray-600"

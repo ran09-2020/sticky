@@ -72,14 +72,17 @@ export const Canvas = forwardRef<CanvasHandle, CanvasProps>(({ children, onSizeC
 
         {/* Center marker */}
         <div data-ev-id="ev_371056db9a"
-        className="absolute text-red-500 text-6xl font-bold pointer-events-none select-none z-10"
+        className="absolute pointer-events-none select-none z-10 flex items-center justify-center opacity-20"
         style={{
           left: canvasSize.width / 2,
           top: canvasSize.height / 2,
           transform: 'translate(-50%, -50%)'
         }}>
-
-          +
+          <div className="w-48 h-48 rounded-full border-4 border-gray-500 flex items-center justify-center">
+            <div className="w-24 h-24 rounded-full border-4 border-gray-500 flex items-center justify-center">
+              <div className="w-4 h-4 rounded-full bg-gray-500"></div>
+            </div>
+          </div>
         </div>
         
         {children}

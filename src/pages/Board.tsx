@@ -38,10 +38,6 @@ export default function Board() {
     setBoardSizePercent(Math.max(widthPercent, heightPercent));
   }, []);
 
-  const handleCenterView = useCallback(() => {
-    canvasRef.current?.centerView();
-  }, []);
-
   const handleResetSize = useCallback(() => {
     canvasRef.current?.resetSize();
   }, []);
@@ -197,7 +193,6 @@ export default function Board() {
         onTypeSelect={setSelectedNoteType}
         onExportPdf={handleExportPdf}
         onCopyLink={handleCopyLink}
-        onCenterView={handleCenterView}
         onResetSize={handleResetSize}
         onDeleteAll={handleDeleteAllNotes}
         boardSizePercent={boardSizePercent} />
