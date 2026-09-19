@@ -23,25 +23,25 @@ export function Toolbar({
 }: ToolbarProps) {
   const toolbarRef = useRef<HTMLDivElement>(null);
 
-  // Calculate position near the toolbar (bottom center of visible area)
+  // Calculate position above the toolbar buttons
   const getNotePosition = (): {x: number;y: number;} => {
     const wrapper = transformRef.current;
+    const state = wrapper?.state;
 
-    if (!wrapper || !wrapper.state) {
-      return { x: 200, y: 200 };
-    }
+    // Get current transform values, default to initial state
+    const positionX = state?.positionX ?? 0;
+    const positionY = state?.positionY ?? 0;
+    const currentScale = state?.scale ?? 1;
 
-    const { positionX, positionY, scale: currentScale } = wrapper.state;
+    // Target screen position: above the toolbar, center-right
+    const screenX = window.innerWidth / 2 + 80;
+    const screenY = window.innerHeight - 250;
 
-    // Position near bottom center of viewport (above toolbar)
-    const screenX = window.innerWidth / 2;
-    const screenY = window.innerHeight - 150;
+    // Convert screen coordinates to canvas coordinates
+    const canvasX = (screenX - positionX) / currentScale;
+    const canvasY = (screenY - positionY) / currentScale;
 
-    // Convert to canvas coordinates
-    const canvasX = (screenX - positionX) / currentScale - 60;
-    const canvasY = (screenY - positionY) / currentScale - 60;
-
-    return { x: Math.max(10, canvasX), y: Math.max(10, canvasY) };
+    return { x: canvasX, y: canvasY };
   };
 
   const handleAddNote = (type: NoteType) => {
