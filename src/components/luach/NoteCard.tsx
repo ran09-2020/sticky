@@ -150,12 +150,11 @@ export function NoteCard({
           {/* Card lines */}
           {isCard &&
           <>
-              <div data-ev-id="ev_adf83a6a96" className="absolute top-0 left-0 right-0 h-3 bg-red-400/60" />
-              <div data-ev-id="ev_57910a955b" className="absolute top-5 left-2 right-2 bottom-6 flex flex-col gap-2">
-                {[...Array(5)].map((_, i) =>
-              <div data-ev-id="ev_2fe2f7bad8" key={i} className="h-px bg-blue-300/30" />
-              )}
-              </div>
+              <div data-ev-id="ev_8661509cfa" className="absolute top-0 left-0 right-0 h-4 bg-red-400/70 pointer-events-none" />
+              <div data-ev-id="ev_45c2564a4b" className="absolute top-6 left-0 right-0 bottom-0 pointer-events-none" style={{
+              backgroundImage: 'repeating-linear-gradient(transparent, transparent 23px, #93c5fd 23px, #93c5fd 24px)',
+              backgroundPosition: '0 0'
+            }} />
             </>
           }
 
@@ -174,10 +173,12 @@ export function NoteCard({
           value={localText}
           onChange={(e) => handleTextChange(e.target.value)}
           onMouseDown={(e) => e.stopPropagation()}
-          className="no-drag w-full h-full bg-transparent border-none outline-none resize-none p-2 text-gray-800 text-sm leading-relaxed"
+          onClick={(e) => e.stopPropagation()}
+          className="no-drag w-full h-full bg-transparent border-none outline-none resize-none p-2 text-gray-800 text-sm leading-relaxed relative z-10"
           style={{
             fontFamily,
-            paddingTop: isCard ? '18px' : '8px'
+            paddingTop: isCard ? '28px' : '8px',
+            lineHeight: isCard ? '24px' : undefined
           }}
           placeholder="הקלד כאן..."
           dir="auto" />
