@@ -78,9 +78,9 @@ export const Canvas = forwardRef<CanvasHandle, CanvasProps>(({ children, onSizeC
           top: canvasSize.height / 2,
           transform: 'translate(-50%, -50%)'
         }}>
-          <div className="w-48 h-48 rounded-full border-4 border-gray-500 flex items-center justify-center">
-            <div className="w-24 h-24 rounded-full border-4 border-gray-500 flex items-center justify-center">
-              <div className="w-4 h-4 rounded-full bg-gray-500"></div>
+          <div className="w-16 h-16 rounded-full border-2 border-red-500 flex items-center justify-center">
+            <div className="w-8 h-8 rounded-full border-2 border-red-500 flex items-center justify-center">
+              <div className="w-2 h-2 rounded-full bg-red-500"></div>
             </div>
           </div>
         </div>
