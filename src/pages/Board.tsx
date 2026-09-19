@@ -70,7 +70,7 @@ export default function Board() {
     const noteHeight = 120;
     const posX = Math.max(0, x - noteWidth / 2);
     const posY = Math.max(0, y - noteHeight / 2);
-    
+
     addNote('sticky', { x: posX, y: posY }, author);
   }, [addNote, author]);
 
@@ -110,7 +110,7 @@ export default function Board() {
   if (!board) return null;
 
   return (
-    <div data-ev-id="ev_2420b85897" className="h-screen w-screen overflow-hidden bg-gray-100">
+    <div data-ev-id="ev_2420b85897" className="h-screen w-screen overflow-hidden bg-gray-100 relative">
 
       {/* Header */}
       <Header
@@ -132,8 +132,20 @@ export default function Board() {
 
 
       {/* Canvas */}
-      <Canvas onCanvasClick={handleCanvasClick}>
-        <div data-ev-id="ev_134a15b931" ref={notesContainerRef} className="absolute inset-0">
+      <Canvas>
+        <div data-ev-id="ev_d0f766c9fc"
+        ref={notesContainerRef}
+        className="absolute inset-0 cursor-crosshair"
+        onClick={(e) => {
+          // Only handle clicks directly on this container, not on notes
+          if (e.target === e.currentTarget) {
+            const rect = e.currentTarget.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            handleCanvasClick(x, y);
+          }
+        }}>
+
           {notes.map((note) =>
           <NoteCard
             key={note.id}
