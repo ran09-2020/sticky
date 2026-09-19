@@ -13,11 +13,15 @@ export function Canvas({ children, onScaleChange, transformRef }: CanvasProps) {
   const ref = transformRef ?? localRef;
 
   const handleTransform = useCallback((
-  _ref: ReactZoomPanPinchRef,
-  state: {scale: number;}) =>
-  {
+    _ref: ReactZoomPanPinchRef,
+    state: { scale: number }
+  ) => {
     onScaleChange?.(state.scale);
   }, [onScaleChange]);
+
+  // Center the canvas: position so that canvas center aligns with viewport center
+  const initialX = typeof window !== 'undefined' ? -(CANVAS_SIZE - window.innerWidth) / 2 : 0;
+  const initialY = typeof window !== 'undefined' ? -(CANVAS_SIZE - window.innerHeight) / 2 : 0;
 
   return (
     <TransformWrapper
@@ -26,13 +30,12 @@ export function Canvas({ children, onScaleChange, transformRef }: CanvasProps) {
       minScale={MIN_ZOOM}
       maxScale={MAX_ZOOM}
       limitToBounds={false}
-      
       wheel={{ step: 0.05 }}
-      panning={{ velocityDisabled: true }}
+      panning={{ velocityDisabled: true, excluded: ['no-drag'] }}
       onTransform={handleTransform}
-      initialPositionX={-CANVAS_SIZE / 2 + (typeof window !== 'undefined' ? window.innerWidth / 2 : 500)}
-      initialPositionY={-CANVAS_SIZE / 2 + (typeof window !== 'undefined' ? window.innerHeight / 2 : 400)}
-      centerOnInit={true}>
+      initialPositionX={initialX}
+      initialPositionY={initialY}
+    >
 
       {({ zoomIn, zoomOut, resetTransform }) =>
       <>

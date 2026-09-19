@@ -21,31 +21,31 @@ export function Toolbar({
 }: ToolbarProps) {
   const toolbarRef = useRef<HTMLDivElement>(null);
 
-  const getViewportCenter = (): {x: number;y: number;} => {
+  const getViewportCenter = (): {x: number; y: number;} => {
     const wrapper = transformRef.current;
-    if (!wrapper) {
-      return { x: CANVAS_SIZE / 2 - 60, y: CANVAS_SIZE / 2 - 60 };
+    
+    // Default: center of canvas
+    const defaultPos = { x: CANVAS_SIZE / 2 - 60, y: CANVAS_SIZE / 2 - 100 };
+    
+    if (!wrapper || !wrapper.state) {
+      return defaultPos;
     }
 
-    const state = wrapper.state;
-    if (!state) {
-      return { x: CANVAS_SIZE / 2 - 60, y: CANVAS_SIZE / 2 - 60 };
-    }
+    const { positionX, positionY, scale: currentScale } = wrapper.state;
 
-    const { positionX, positionY, scale: currentScale } = state;
-
-    // Position above the toolbar (bottom of screen minus toolbar height)
+    // Get viewport dimensions
     const viewportWidth = window.innerWidth;
     const viewportHeight = window.innerHeight;
-    const toolbarY = viewportHeight - 80; // 80px from bottom (above toolbar)
-    const centerX = viewportWidth / 2;
+    
+    // Position above toolbar (bottom center of visible area)
+    const screenX = viewportWidth / 2;
+    const screenY = viewportHeight - 200; // Above the toolbar
 
     // Convert screen coordinates to canvas coordinates
-    const canvasX = (centerX - positionX) / currentScale;
-    const canvasY = (toolbarY - positionY) / currentScale;
+    const canvasX = (screenX - positionX) / currentScale - 60;
+    const canvasY = (screenY - positionY) / currentScale - 60;
 
-    // Offset for note size
-    return { x: canvasX - 60, y: canvasY - 150 };
+    return { x: canvasX, y: canvasY };
   };
 
   const handleAddNote = (type: NoteType) => {
