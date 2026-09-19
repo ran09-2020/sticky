@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect, useImperativeHandle, forwardRef, type ReactNode, type MouseEvent } from 'react';
+import { useState, useRef, useEffect, useImperativeHandle, forwardRef, type ReactNode } from 'react';
 
 export interface CanvasHandle {
   centerView: () => void;
@@ -18,8 +18,8 @@ export const Canvas = forwardRef<CanvasHandle, CanvasProps>(({ children, onSizeC
 
   // Notify parent of size changes
   useEffect(() => {
-    const widthPercent = Math.round((canvasSize.width / window.innerWidth) * 100);
-    const heightPercent = Math.round((canvasSize.height / window.innerHeight) * 100);
+    const widthPercent = Math.round(canvasSize.width / window.innerWidth * 100);
+    const heightPercent = Math.round(canvasSize.height / window.innerHeight * 100);
     onSizeChange?.(widthPercent, heightPercent);
   }, [canvasSize, onSizeChange]);
 
@@ -45,40 +45,7 @@ export const Canvas = forwardRef<CanvasHandle, CanvasProps>(({ children, onSizeC
     }
   }), [canvasSize]);
 
-  const handleResizeStart = (e: MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setIsResizing(true);
-    resizeStart.current = {
-      x: e.clientX,
-      y: e.clientY,
-      width: canvasSize.width,
-      height: canvasSize.height
-    };
-  };
-
-  useEffect(() => {
-    if (!isResizing) return;
-
-    const handleResizeMove = (e: globalThis.MouseEvent) => {
-      const dx = e.clientX - resizeStart.current.x;
-      const dy = e.clientY - resizeStart.current.y;
-      const newWidth = Math.max(window.innerWidth / 2, resizeStart.current.width + dx);
-      const newHeight = Math.max(window.innerHeight / 2, resizeStart.current.height + dy);
-      setCanvasSize({ width: newWidth, height: newHeight });
-    };
-
-    const handleResizeEnd = () => {
-      setIsResizing(false);
-    };
-
-    window.addEventListener('mousemove', handleResizeMove);
-    window.addEventListener('mouseup', handleResizeEnd);
-    return () => {
-      window.removeEventListener('mousemove', handleResizeMove);
-      window.removeEventListener('mouseup', handleResizeEnd);
-    };
-  }, [isResizing]);
+  
 
   return (
     <div data-ev-id="ev_c80e5515a1"
@@ -115,20 +82,9 @@ export const Canvas = forwardRef<CanvasHandle, CanvasProps>(({ children, onSizeC
         
         {children}
 
-        {/* Resize handle - bottom right corner */}
-        <div data-ev-id="ev_9049b8c1f6"
-        className="absolute bottom-0 right-0 w-6 h-6 cursor-se-resize z-50 flex items-center justify-center"
-        onMouseDown={handleResizeStart}
-        title="גרור להגדלת הלוח">
-
-          <svg data-ev-id="ev_aafcb9fdf5" viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4 text-gray-400 hover:text-gray-600">
-            <path data-ev-id="ev_42213c3ff1" d="M22 22H20V20H22V22ZM22 18H20V16H22V18ZM18 22H16V20H18V22ZM22 14H20V12H22V14ZM18 18H16V16H18V18ZM14 22H12V20H14V22ZM22 10H20V8H22V10ZM18 14H16V12H18V14ZM14 18H12V16H14V18ZM10 22H8V20H10V22Z" />
-          </svg>
-        </div>
-
-        {/* Right edge resize handle */}
-        <div data-ev-id="ev_db64dda97e"
-        className="absolute top-0 right-0 w-2 h-full cursor-e-resize z-40 hover:bg-blue-400/30"
+        {/* Resize handle - bottom left corner */}
+        <div data-ev-id="ev_ae80edf7fc"
+        className="absolute bottom-0 left-0 w-6 h-6 cursor-sw-resize z-50 flex items-center justify-center"
         onMouseDown={(e) => {
           e.preventDefault();
           e.stopPropagation();
@@ -142,9 +98,50 @@ export const Canvas = forwardRef<CanvasHandle, CanvasProps>(({ children, onSizeC
 
           const handleMove = (ev: globalThis.MouseEvent) => {
             const dx = ev.clientX - resizeStart.current.x;
+            const dy = ev.clientY - resizeStart.current.y;
+            // Dragging left (negative dx) = increase width, dragging down = increase height
+            setCanvasSize({
+              width: Math.max(window.innerWidth / 2, resizeStart.current.width - dx),
+              height: Math.max(window.innerHeight / 2, resizeStart.current.height + dy)
+            });
+          };
+
+          const handleUp = () => {
+            setIsResizing(false);
+            window.removeEventListener('mousemove', handleMove);
+            window.removeEventListener('mouseup', handleUp);
+          };
+
+          window.addEventListener('mousemove', handleMove);
+          window.addEventListener('mouseup', handleUp);
+        }}
+        title="גרור להגדלת הלוח">
+
+          <svg data-ev-id="ev_763057e69e" viewBox="0 0 24 24" fill="currentColor" className="w-4 h-4 text-gray-400 hover:text-gray-600 transform scale-x-[-1]">
+            <path data-ev-id="ev_f7762a27d7" d="M22 22H20V20H22V22ZM22 18H20V16H22V18ZM18 22H16V20H18V22ZM22 14H20V12H22V14ZM18 18H16V16H18V18ZM14 22H12V20H14V22ZM22 10H20V8H22V10ZM18 14H16V12H18V14ZM14 18H12V16H14V18ZM10 22H8V20H10V22Z" />
+          </svg>
+        </div>
+
+        {/* Left edge resize handle */}
+        <div data-ev-id="ev_4022d41956"
+        className="absolute top-0 left-0 w-2 h-full cursor-w-resize z-40 hover:bg-blue-400/30"
+        onMouseDown={(e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          setIsResizing(true);
+          resizeStart.current = {
+            x: e.clientX,
+            y: e.clientY,
+            width: canvasSize.width,
+            height: canvasSize.height
+          };
+
+          const handleMove = (ev: globalThis.MouseEvent) => {
+            const dx = ev.clientX - resizeStart.current.x;
+            // Dragging left (negative dx) = increase width
             setCanvasSize((prev) => ({
               ...prev,
-              width: Math.max(window.innerWidth / 2, resizeStart.current.width + dx)
+              width: Math.max(window.innerWidth / 2, resizeStart.current.width - dx)
             }));
           };
 
@@ -157,6 +154,7 @@ export const Canvas = forwardRef<CanvasHandle, CanvasProps>(({ children, onSizeC
           window.addEventListener('mousemove', handleMove);
           window.addEventListener('mouseup', handleUp);
         }} />
+
 
 
         {/* Bottom edge resize handle */}
