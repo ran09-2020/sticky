@@ -1,4 +1,4 @@
-import { useState, useRef, useCallback } from 'react';
+import { useState, useRef, useCallback, type DragEvent } from 'react';
 import { useParams, useNavigate } from 'react-router';
 import type { ReactZoomPanPinchRef } from 'react-zoom-pan-pinch';
 import { supabase } from '@/integrations/supabase/client';
@@ -32,9 +32,7 @@ export default function Board() {
   const transformRef = useRef<ReactZoomPanPinchRef>(null);
   const canvasContentRef = useRef<HTMLDivElement>(null);
 
-  const handleAddNote = useCallback((type: NoteType, position: {x: number;y: number;}) => {
-    addNote(type, position, author);
-  }, [addNote, author]);
+  
 
   const handleExportPdf = useCallback(async () => {
     const contentEl = canvasContentRef.current;
@@ -74,6 +72,31 @@ export default function Board() {
     setTimeout(() => setShowCenterMarker(false), 2000);
   }, []);
 
+  // Handle drop from toolbar
+  const handleDrop = useCallback((e: DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    const noteType = e.dataTransfer.getData('noteType') as NoteType;
+    if (!noteType) return;
+
+    const wrapper = transformRef.current;
+    const state = wrapper?.state;
+
+    const positionX = state?.positionX ?? 0;
+    const positionY = state?.positionY ?? 0;
+    const currentScale = state?.scale ?? 1;
+
+    // Convert drop position to canvas coordinates
+    const canvasX = (e.clientX - positionX) / currentScale - 60;
+    const canvasY = (e.clientY - positionY) / currentScale - 60;
+
+    addNote(noteType, { x: canvasX, y: canvasY }, author);
+  }, [addNote, author]);
+
+  const handleDragOver = useCallback((e: DragEvent<HTMLDivElement>) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'copy';
+  }, []);
+
   // Database not enabled
   if (!supabase) {
     return (
@@ -110,7 +133,11 @@ export default function Board() {
   if (!board) return null;
 
   return (
-    <div data-ev-id="ev_b105bfa820" className="h-screen w-screen overflow-hidden bg-gray-100">
+    <div data-ev-id="ev_2420b85897"
+    className="h-screen w-screen overflow-hidden bg-gray-100"
+    onDrop={handleDrop}
+    onDragOver={handleDragOver}>
+
       {/* Header */}
       <Header
         title={board.title}
@@ -155,11 +182,11 @@ export default function Board() {
       <Toolbar
         scale={scale}
         transformRef={transformRef}
-        onAddNote={handleAddNote}
         onExportPdf={handleExportPdf}
         onCopyLink={handleCopyLink}
         onCenterView={handleCenterView}
       />
+
 
 
       {/* Toast notifications */}
