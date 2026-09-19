@@ -68,37 +68,10 @@ export function Header({
       {/* Divider */}
       <div className="w-px h-4 bg-gray-300" />
 
-      {/* Topic */}
-      <div data-ev-id="ev_01c6118ad4" className="flex items-center gap-2">
-        <label className="text-xs text-gray-500">נושא:</label>
-        {editingTitle && !isProtected ?
-        <input data-ev-id="ev_a5d5ac2aed"
-        ref={titleInputRef}
-        type="text"
-        value={localTitle}
-        onChange={(e) => setLocalTitle(e.target.value)}
-        onBlur={handleTitleSubmit}
-        onKeyDown={(e) => e.key === 'Enter' && handleTitleSubmit()}
-        className="px-2 py-0.5 border rounded text-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
-        placeholder="נושא הלוח" /> :
-
-
-        <h1 data-ev-id="ev_2e71df04da"
-        className={`text-sm font-medium ${
-        !isProtected ? 'cursor-pointer hover:text-blue-600' : ''}`
-        }
-        onClick={() => !isProtected && setEditingTitle(true)}
-        title={!isProtected ? 'לחץ לעריכה' : undefined}>
-
-            {title || 'ללא נושא'}
-          </h1>
-        }
-      </div>
-
       {/* Tabs */}
       {topics && activeTopicId && onSelectTopic && onAddTopic && onRenameTopic && onRemoveTopic && (
-        <>
-          <div className="w-px h-4 bg-gray-300 mx-2" />
+        <div className="flex items-center gap-2">
+          <label className="text-xs text-gray-500">נושא:</label>
           <BoardTabs 
             topics={topics}
             activeTopicId={activeTopicId}
@@ -108,7 +81,7 @@ export function Header({
             onRemoveTopic={onRemoveTopic}
             isProtected={isProtected}
           />
-        </>
+        </div>
       )}
 
       {/* Divider */}
