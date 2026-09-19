@@ -156,7 +156,7 @@ export function NoteCard({
               <div data-ev-id="ev_9a4032eee2" className="absolute top-0 left-0 right-0 h-4 bg-red-400/70 pointer-events-none" />
               <div data-ev-id="ev_162986cdf9" className="absolute top-6 left-0 right-0 bottom-0 pointer-events-none" style={{
               backgroundImage: 'repeating-linear-gradient(transparent, transparent 23px, #93c5fd 23px, #93c5fd 24px)',
-              backgroundPosition: '0 0'
+              backgroundPosition: '0 4px'
             }} />
             </>
           }
@@ -177,7 +177,7 @@ export function NoteCard({
           onChange={(e) => handleTextChange(e.target.value)}
           onMouseDown={(e) => e.stopPropagation()}
           onClick={(e) => e.stopPropagation()}
-          className="no-drag absolute top-6 left-0 right-0 bottom-0 bg-transparent border-none outline-none resize-none p-2 text-gray-800 text-sm leading-relaxed"
+          className={`no-drag absolute top-6 left-0 right-0 bottom-0 bg-transparent border-none outline-none resize-none px-2 text-gray-800 text-sm ${isCard ? 'pt-1' : 'p-2 leading-relaxed'}`}
           style={{
             fontFamily,
             lineHeight: isCard ? '24px' : undefined
