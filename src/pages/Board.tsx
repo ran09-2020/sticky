@@ -1,6 +1,5 @@
 import { useState, useRef, useCallback, type DragEvent } from 'react';
 import { useParams, useNavigate } from 'react-router';
-import type { ReactZoomPanPinchRef } from 'react-zoom-pan-pinch';
 import { supabase } from '@/integrations/supabase/client';
 import { useBoard } from '@/hooks/use-board';
 import { useNotes } from '@/hooks/use-notes';
@@ -26,10 +25,7 @@ export default function Board() {
   const { boards: localBoards, addBoard, removeBoard } = useLocalBoards();
   const { author, setAuthor } = useAuthor();
 
-  const [scale, setScale] = useState(1);
-  const [showCenterMarker, setShowCenterMarker] = useState(false);
   const [toast, setToast] = useState<{message: string;type: 'success' | 'error';} | null>(null);
-  const transformRef = useRef<ReactZoomPanPinchRef>(null);
   const canvasContentRef = useRef<HTMLDivElement>(null);
 
 
@@ -67,11 +63,6 @@ export default function Board() {
     addBoard({ slug: newSlug, title: '' });
   }, [addBoard]);
 
-  const handleCenterView = useCallback(() => {
-    setShowCenterMarker(true);
-    setTimeout(() => setShowCenterMarker(false), 2000);
-  }, []);
-
   // Handle drop from toolbar
   const handleDrop = useCallback((e: DragEvent<HTMLDivElement>) => {
     e.preventDefault();
@@ -83,18 +74,14 @@ export default function Board() {
     if (!contentEl) return;
 
     const rect = contentEl.getBoundingClientRect();
-    const currentScale = transformRef.current?.state?.scale ?? 1;
 
     // Note dimensions (to center the note at drop point)
     const noteWidth = noteType === 'sticky' ? 120 : 180;
     const noteHeight = 120;
 
-    // Convert screen coordinates to canvas coordinates
-    // rect already accounts for the transform, so we just need to:
-    // 1. Get position relative to the transformed canvas
-    // 2. Divide by scale to get actual canvas position
-    const canvasX = (e.clientX - rect.left) / currentScale - noteWidth / 2;
-    const canvasY = (e.clientY - rect.top) / currentScale - noteHeight / 2;
+    // Calculate position relative to the canvas (no zoom/pan anymore)
+    const canvasX = e.clientX - rect.left - noteWidth / 2;
+    const canvasY = e.clientY - rect.top - noteHeight / 2;
 
     addNote(noteType, { x: Math.max(0, canvasX), y: Math.max(0, canvasY) }, author);
   }, [addNote, author]);
@@ -165,16 +152,16 @@ export default function Board() {
 
 
       {/* Canvas */}
-      <Canvas onScaleChange={setScale} transformRef={transformRef} showCenterMarker={showCenterMarker}>
+      <Canvas>
         <div data-ev-id="ev_134a15b931" ref={canvasContentRef} className="absolute inset-0">
-          {/* Center marker */}
-          <div data-ev-id="ev_fd6ccc61b5" className="absolute text-red-500 text-4xl font-bold pointer-events-none select-none" style={{ left: 1000, top: 1000, transform: 'translate(-50%, -50%)' }}>+</div>
+          {/* Center marker - red + at center of screen */}
+          <div data-ev-id="ev_11816c4082" className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 text-red-500 text-6xl font-bold pointer-events-none select-none">+</div>
           
           {notes.map((note) =>
           <NoteCard
             key={note.id}
             note={note}
-            scale={scale}
+            scale={1}
             onMove={moveNote}
             onResize={resizeNote}
             onTextChange={updateText}
@@ -190,11 +177,8 @@ export default function Board() {
 
       {/* Toolbar */}
       <Toolbar
-        scale={scale}
-        transformRef={transformRef}
         onExportPdf={handleExportPdf}
-        onCopyLink={handleCopyLink}
-        onCenterView={handleCenterView} />
+        onCopyLink={handleCopyLink} />
 
 
 

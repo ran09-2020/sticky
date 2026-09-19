@@ -1,23 +1,15 @@
 import { useRef, type DragEvent } from 'react';
-import { StickyNote, FileText, Download, Link2, Crosshair } from 'lucide-react';
+import { StickyNote, FileText, Download, Link2 } from 'lucide-react';
 import type { NoteType } from '@/types/luach';
-import { CANVAS_SIZE } from '@/types/luach';
-import type { ReactZoomPanPinchRef } from 'react-zoom-pan-pinch';
 
 interface ToolbarProps {
-  scale: number;
-  transformRef: React.RefObject<ReactZoomPanPinchRef | null>;
   onExportPdf: () => void;
   onCopyLink: () => void;
-  onCenterView: () => void;
 }
 
 export function Toolbar({
-  scale,
-  transformRef,
   onExportPdf,
-  onCopyLink,
-  onCenterView
+  onCopyLink
 }: ToolbarProps) {
   const toolbarRef = useRef<HTMLDivElement>(null);
 
@@ -25,26 +17,6 @@ export function Toolbar({
   const handleDragStart = (e: DragEvent<HTMLButtonElement>, type: NoteType) => {
     e.dataTransfer.setData('noteType', type);
     e.dataTransfer.effectAllowed = 'copy';
-  };
-
-  const handleZoomIn = () => {
-    transformRef.current?.zoomIn(0.05);
-  };
-
-  const handleZoomOut = () => {
-    transformRef.current?.zoomOut(0.05);
-  };
-
-  const handleCenterView = () => {
-    const wrapper = transformRef.current;
-    if (!wrapper) return;
-
-    // Center the canvas: move so that canvas center is at viewport center
-    const centerX = -(CANVAS_SIZE / 2) + window.innerWidth / 2;
-    const centerY = -(CANVAS_SIZE / 2) + window.innerHeight / 2;
-
-    wrapper.setTransform(centerX, centerY, 1, 300);
-    onCenterView();
   };
 
   return (
@@ -74,36 +46,6 @@ export function Toolbar({
           <span data-ev-id="ev_e51ae0e7c1">כרטיסייה</span>
         </button>
       </div>
-
-      {/* Zoom controls */}
-      <div data-ev-id="ev_7a8f84692c" className="flex items-center gap-1 border-l border-gray-200 pl-2">
-        <button data-ev-id="ev_538f62a57d"
-        onClick={handleZoomIn}
-        className="w-7 h-7 flex items-center justify-center hover:bg-gray-100 rounded-lg text-gray-700 font-bold text-lg"
-        title="הגדל">
-
-          +
-        </button>
-        <span data-ev-id="ev_3dc253d684" className="text-xs text-gray-500 min-w-[40px] text-center">
-          {Math.round(scale * 100)}%
-        </span>
-        <button data-ev-id="ev_dd126f842a"
-        onClick={handleZoomOut}
-        className="w-7 h-7 flex items-center justify-center hover:bg-gray-100 rounded-lg text-gray-700 font-bold text-lg"
-        title="הקטן">
-
-          −
-        </button>
-      </div>
-
-      {/* Center button */}
-      <button data-ev-id="ev_faed6d5297"
-      onClick={handleCenterView}
-      className="p-1.5 hover:bg-gray-100 rounded-lg text-gray-600 border-l border-gray-200 pl-2"
-      title="מרכז את הלוח">
-
-        <Crosshair size={18} />
-      </button>
 
       {/* Export & Share */}
       <div data-ev-id="ev_06051549ed" className="flex items-center gap-1">
