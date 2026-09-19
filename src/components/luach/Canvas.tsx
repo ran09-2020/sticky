@@ -37,7 +37,7 @@ export function Canvas({ children, onScaleChange, transformRef }: CanvasProps) {
         minScale={MIN_ZOOM}
         maxScale={MAX_ZOOM}
         limitToBounds={false}
-        wheel={{ step: 0.02 }}
+        wheel={{ step: 0.05 }}
         panning={{ velocityDisabled: true, excluded: ['no-drag'] }}
         onTransform={handleTransform}
         initialPositionX={0}
