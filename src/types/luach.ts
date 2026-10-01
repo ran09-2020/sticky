@@ -38,7 +38,7 @@ export const NOTE_COLORS: Record<NoteColor, { bg: string; gradient: string }> = 
 // Font configurations
 export const NOTE_FONTS: Record<NoteFont, string> = {
   base: 'system-ui, -apple-system, sans-serif',
-  hand: '"Caveat", cursive',
+  hand: '"Caveat", "Guttman Yad", "Dana Yad", "Ktav Yad", "Segoe Print", cursive',
   round: '"Outfit", sans-serif',
 };
 
