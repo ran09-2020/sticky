@@ -44,7 +44,9 @@ export function NoteCard({
 
   // Sync text from server
   useEffect(() => {
-    setLocalText(note.text);
+    if (document.activeElement !== textareaRef.current) {
+      setLocalText(note.text);
+    }
   }, [note.text]);
 
   // Debounced text update
